@@ -1,7 +1,9 @@
 ﻿using Assets.Scripts.Data.Events;
 using Assets.Scripts.Data.Scriptable;
+using Assets.Scripts.UI;
 using System;
 using System.Collections;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,17 +54,31 @@ namespace Assets.Scripts.Core
         // Hard currency
         private Text _diamondCount;
 
+        [Header("Shop elements")]
+        [SerializeField]
+        private GameObject _shopPanel;
+
+        [SerializeField]
+        private GameObject _catalogItemPanel;
+
+        [SerializeField]
+        private CatalogItem _catalogItemPrefab;
+
+        [SerializeField]
+        private ChoseCurrencyPanel _choseCurrencyPanel;
 
         private void OnEnable()
         {
             PlayfabManager.Inst.RefreshCurrencyDataEvent += OnCurrencyDataRefresh;
             PlayfabManager.Inst.RefreshUserDetailsData += OnUserInfoAcquired;
+            PlayfabManager.Inst.RefreshCatalogItems += OnCatalogItemRecieved;
         }
 
         private void OnDisable()
         {
             PlayfabManager.Inst.RefreshCurrencyDataEvent -= OnCurrencyDataRefresh;
             PlayfabManager.Inst.RefreshUserDetailsData -= OnUserInfoAcquired;
+            PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogItemRecieved;
         }
 
         public IEnumerator PlayIntroSequence()
@@ -99,11 +115,22 @@ namespace Assets.Scripts.Core
             CloseAllExcept(_mainMenuPanel);
         }
 
+        public void ShowShop(bool refreshCatalog = true)
+        {
+            if (refreshCatalog)
+            {
+                PlayfabManager.Inst.GetCatalogItems();
+            }
+            CloseAllExcept(_shopPanel);
+        }
+
         private void CloseAllExcept(GameObject panel = null)
         {
             _introPanel.SetActive(false);
             _loginPanel.SetActive(false);
             _mainMenuPanel.SetActive(false);
+            _shopPanel.SetActive(false);
+            _choseCurrencyPanel.gameObject.SetActive(false);
 
             if (panel != null)
             {
@@ -128,11 +155,51 @@ namespace Assets.Scripts.Core
         {
             _goldCount.text = eventArgs.Gold.ToString();
             _energyCount.text = eventArgs.Energy.ToString();
+            _diamondCount.text = eventArgs.Diamonds.ToString();
         }
 
         private void OnUserInfoAcquired(object sender, PlayfabUserInfoEventArgs eventArgs)
         {
+            _usernameDisplay.text = eventArgs.Username;
+        }
 
+        /// <summary>
+        /// Kinda mixed feelings where to put this method. It spawns UI elements but Catalog item objects
+        /// should be handled by server. There is cloud script function ButItem that will prevent user from
+        /// messing with this.
+        /// </summary>
+        /// <param name="sender">Playfab manager usually but can be subscribed somewhere else in the future</param>
+        /// <param name="eventArgs">Data about items.</param>
+        private void OnCatalogItemRecieved(object sender, PlayfabCatalogItemsEventArgs eventArgs)
+        {
+            // Cleanup of old items in shop planner section.
+            for(int i = _catalogItemPanel.transform.childCount -1; i>= 0; i--)
+            {
+                Destroy(_catalogItemPanel.transform.GetChild(i).gameObject);
+            }
+
+            foreach(var item in eventArgs.CatalogItems)
+            {
+                var catalogItem = Instantiate(_catalogItemPrefab, _catalogItemPanel.transform);
+                catalogItem.Name.text = item.DisplayName;
+                catalogItem.Description.text = item.Description;
+
+                StringBuilder sb = new StringBuilder();
+                foreach(var currency in item.VirtualCurrencyPrices)
+                {
+                    sb.Append(string.Concat(currency.Key, ":", currency.Value, "/"));
+                    catalogItem.currencyOptions.Add(currency.Key);
+                }
+                catalogItem.ItemID = item.ItemId;
+                catalogItem.Price.text = sb.ToString();
+            }
+        }
+
+        internal void DisplayChoseValueOption(CatalogItem catalogItem)
+        {
+            // We dont want to close shop panel in background just for aesthetics reasons :D.
+            _choseCurrencyPanel.gameObject.SetActive(true);
+            _choseCurrencyPanel.SpawnCurrencyOptions(catalogItem);
         }
 
         public void DisplayGenericPlayfabError(string message)

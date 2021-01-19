@@ -8,10 +8,13 @@ namespace Assets.Scripts.Data.Events
 
         public int Energy { get; private set; }
 
-        public PlayfabRefreshCurrencyEventArgs(int energy, int gold)
+        public int Diamonds { get; private set; }
+
+        public PlayfabRefreshCurrencyEventArgs(int energy, int gold, int diamonds)
         {
             this.Gold = gold;
             this.Energy = energy;
+            this.Diamonds = diamonds;
         }
 
         public delegate void PlayfabRefreshCurrencyEventHandler(object sender, PlayfabRefreshCurrencyEventArgs e);

@@ -3,8 +3,10 @@ using PlayFab;
 using PlayFab.ClientModels;
 using System;
 using UnityEngine;
+using static Assets.Scripts.Data.Events.PlayfabCatalogItemsEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabRefreshCurrencyEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserInfoEventArgs;
+using static Assets.Scripts.Data.Events.PlayfabUserInventoryEventArgs;
 
 namespace Assets.Scripts.Core
 {
@@ -23,6 +25,17 @@ namespace Assets.Scripts.Core
         /// Can be hard coded in methods but if we have change user name feature this might come in handy.
         /// </summary>
         public event PlayfabUserInfoEventHandler RefreshUserDetailsData;
+
+        /// <summary>
+        /// When we get catalog items do something with them on UI part. Left space for some platform specific subscriptions
+        /// special deals etc.
+        /// </summary>
+        public event PlayfabCatalogItemsEventHandler RefreshCatalogItems;
+
+        /// <summary>
+        /// When we get items we should display then on user UI so he can do whatever with them.
+        /// </summary>
+        public event PlayfabUserInventoryEventHandler RefreshPlayerInventory;
 
         public string PlayfabCurrentUserID { get; private set; }
 
@@ -168,7 +181,9 @@ namespace Assets.Scripts.Core
             PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(),
             success =>
             {
-                var eventData = new PlayfabRefreshCurrencyEventArgs(success.VirtualCurrency["EG"], success.VirtualCurrency["GL"]);
+                var eventData = new PlayfabRefreshCurrencyEventArgs(success.VirtualCurrency["EG"], 
+                    success.VirtualCurrency["GL"],
+                    success.VirtualCurrency["DM"]);
 
                 RefreshCurrencyDataEvent(this, eventData);
             },
@@ -177,6 +192,66 @@ namespace Assets.Scripts.Core
 
             });
         }
+
+        public void GetCatalogItems()
+        {
+            var request = new GetCatalogItemsRequest();
+
+            PlayFabClientAPI.GetCatalogItems(request,
+                success =>
+                {
+                    RefreshCatalogItems(this, new PlayfabCatalogItemsEventArgs(success.Catalog));
+                },
+                failed =>
+                {
+                    Debug.LogError(failed.ToString());
+                });
+        }
+
+        public void GetUserInventory()
+        {
+            var request = new GetUserInventoryRequest();
+            PlayFabClientAPI.GetUserInventory(request,
+                success =>
+                {
+                    var inverntoryData = new PlayfabUserInventoryEventArgs(success.Inventory);
+
+                    RefreshPlayerInventory(this, inverntoryData);
+                },
+                failed =>
+                {
+                    Debug.LogError(failed.ToString());
+                });
+        }
+
+        public void BuyItem(string itemId, string currencySelected)
+        {
+            var request = new ExecuteCloudScriptRequest()
+            {
+                FunctionName = "BuyItem",
+                FunctionParameter = new { ItemId = itemId, currencyType = currencySelected }
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                success =>
+                {
+                    // cloud script can execute but it doesnt mean
+                    // our logic did not throw something.
+                    if (success.Error == null)
+                    {
+                        Debug.Log("Item bought :D");
+                    }
+                    else
+                    {
+                        Debug.LogError(success.Error.ToString());
+                    }
+                },
+                failed =>
+                {
+                    Debug.LogError(failed.ToString());
+                });
+        }
+
 
         /// <summary>
         ///  Handles errors from playfab. Made more sense to have it here than in UI manager.

@@ -56,6 +56,7 @@ namespace Assets.Scripts.Core
         public void StartMainMenuState()
         {
             CurrentStateOfGame = GameStates.MainMenu;
+            PlayfabManager.Inst.GetUserData();
             PlayfabManager.Inst.GetCurrencyData();
             UIManager.Inst.ShowMainMenu();
         }
