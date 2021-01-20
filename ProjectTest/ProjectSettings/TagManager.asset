@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Pipe
+  - Killer
+  - Point
   layers:
   - Default
   - TransparentFX
@@ -40,4 +43,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Paralax
+    uniqueID: 3242826949
+    locked: 0
+  - name: Ground
+    uniqueID: 2144552409
+    locked: 0
+  - name: Tube
+    uniqueID: 1843991775
+    locked: 0
+  - name: Bird
+    uniqueID: 122366471
     locked: 0

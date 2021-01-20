@@ -331,6 +331,35 @@ namespace Assets.Scripts.Core
                 });
         }
 
+        public void StartGameRequest(Action onSuccess)
+        {
+            var request = new ExecuteCloudScriptRequest()
+            {
+                FunctionName = "CanStartGame"
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                success =>
+                {
+                    // cloud script can execute but it doesnt mean
+                    // our logic did not throw something.
+                    if (success.Error == null)
+                    {
+                        if(onSuccess != null)
+                        {
+                            onSuccess();
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError(success.Error.ToString());
+                    }
+                },
+                failed =>
+                {
+                    Debug.LogError(failed.ToString());
+                });
+        }
 
         /// <summary>
         ///  Handles errors from playfab. Made more sense to have it here than in UI manager.

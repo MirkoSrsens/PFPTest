@@ -6,22 +6,8 @@ namespace General.State
     /// <summary>
     /// Core state for all actions.
     /// </summary>
-    public abstract class State
+    public abstract class State : MonoBehaviour
     {
-        /// <summary>
-        /// Default Constructor.
-        /// </summary>
-        protected State(StateManager stateManager)
-        {
-            this.stateManager = stateManager;
-            DiContainerLibrary.DiContainer.DiContainerInitializor.RegisterObject(this);
-        }
-
-        /// <summary>
-        /// Reference to <see cref="StateManager"/>
-        /// </summary>
-        protected StateManager stateManager { get; set; }
-
         /// <summary>
         /// Gets or sets state priority.
         /// </summary>
@@ -30,17 +16,23 @@ namespace General.State
         /// <summary>
         /// Gets <see cref="DesignController"/> for easier access.
         /// </summary>
-        protected DesignController designController { get { return stateManager.DesignController; } }
+        protected DesignController designController { get; set; }
 
         /// <summary>
         /// Gets <see cref="StateController"/> for easier access.
         /// </summary>
-        protected StateController controller { get { return stateManager.Controller; } }
+        public StateController controller { get; private set; }
 
-        /// <summary>
-        /// Gets <see cref="Transform"/> for easier access.
-        /// </summary>
-        protected Transform transform { get { return stateManager.transform; } }
+        private void Awake()
+        {
+            designController = GetComponent<DesignController>();
+            controller = GetComponent<StateController>();
+        }
+
+        protected virtual void Initialization_State()
+        {
+            DiContainerLibrary.DiContainer.DiContainerInitializor.RegisterObject(this);
+        }
 
         /// <summary>
         /// Starts on beginning of the state.
@@ -83,6 +75,16 @@ namespace General.State
             {
                 designController.StopTask(this.GetType().Name);
             }
+        }
+
+        private void Start()
+        {
+            Initialization_State();
+        }
+
+        public void Update()
+        {
+            Update_State();
         }
     }
 }

@@ -88,20 +88,26 @@ namespace Assets.Scripts.Core
 
         private void OnEnable()
         {
-            PlayfabManager.Inst.RefreshCurrencyDataEvent += OnCurrencyDataRefresh;
-            PlayfabManager.Inst.RefreshUserDetailsData += OnUserInfoAcquired;
-            PlayfabManager.Inst.RefreshCatalogItems += OnCatalogItemRecieved;
-            PlayfabManager.Inst.RefreshPlayerInventory += OnInventoryItemsRecieved;
-            PlayfabManager.Inst.RefreshUserReadonlyData += OnStatsRecieved;
+            if (PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.RefreshCurrencyDataEvent += OnCurrencyDataRefresh;
+                PlayfabManager.Inst.RefreshUserDetailsData += OnUserInfoAcquired;
+                PlayfabManager.Inst.RefreshCatalogItems += OnCatalogItemRecieved;
+                PlayfabManager.Inst.RefreshPlayerInventory += OnInventoryItemsRecieved;
+                PlayfabManager.Inst.RefreshUserReadonlyData += OnStatsRecieved;
+            }
         }
 
         private void OnDisable()
         {
-            PlayfabManager.Inst.RefreshCurrencyDataEvent -= OnCurrencyDataRefresh;
-            PlayfabManager.Inst.RefreshUserDetailsData -= OnUserInfoAcquired;
-            PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogItemRecieved;
-            PlayfabManager.Inst.RefreshPlayerInventory -= OnInventoryItemsRecieved;
-            PlayfabManager.Inst.RefreshUserReadonlyData -= OnStatsRecieved;
+            if (PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.RefreshCurrencyDataEvent -= OnCurrencyDataRefresh;
+                PlayfabManager.Inst.RefreshUserDetailsData -= OnUserInfoAcquired;
+                PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogItemRecieved;
+                PlayfabManager.Inst.RefreshPlayerInventory -= OnInventoryItemsRecieved;
+                PlayfabManager.Inst.RefreshUserReadonlyData -= OnStatsRecieved;
+            }
         }
 
         public IEnumerator PlayIntroSequence()
@@ -283,6 +289,15 @@ namespace Assets.Scripts.Core
             }
         }
 
+        public void OnClick_StartGame()
+        {
+            PlayfabManager.Inst.StartGameRequest(
+                () =>
+                {
+                    CloseAllExcept(null);
+                    GameManager.Inst.StartGame();
+                });
+        }
 
         public void DisplayGenericPlayfabError(string message)
         {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GameStates
 {
@@ -15,6 +16,9 @@ namespace Assets.Scripts.Core
 {
     public class GameManager : SingletonBehaviour<GameManager>
     {
+        [SerializeField]
+        private GameObject mainMenuCamera;
+
         /// <summary>
         /// Gets or sets current state of the game. Allowing us to inspect closer what state did we stuck with
         /// and potentially recover from game braking issues.
@@ -59,6 +63,13 @@ namespace Assets.Scripts.Core
             PlayfabManager.Inst.GetUserData();
             PlayfabManager.Inst.GetCurrencyData();
             UIManager.Inst.ShowMainMenu();
+        }
+
+        public void StartGame()
+        {
+            CurrentStateOfGame = GameStates.Playing;
+            mainMenuCamera.SetActive(false);
+            SceneManager.LoadScene("FlappyBird", LoadSceneMode.Additive);
         }
     }
 }

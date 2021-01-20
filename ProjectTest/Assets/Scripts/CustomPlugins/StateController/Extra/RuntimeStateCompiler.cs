@@ -25,7 +25,7 @@ public class RuntimeStateCompiler : MonoBehaviour
             DestroyImmediate(soundToRemove);
         }
 
-        var allStates = gameObject.GetComponent<StateManager>().AllStates;
+        var allStates = gameObject.GetComponents<State>();
         foreach (var state in allStates)
         {
             if (allSoundData.FirstOrDefault(x => x.State == state) != null)

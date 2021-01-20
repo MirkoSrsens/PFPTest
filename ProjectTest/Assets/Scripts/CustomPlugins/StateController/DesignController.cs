@@ -20,13 +20,13 @@ namespace General.State
             animationController = GetComponent<AnimationController>();
         }
 
-        public void StartTask(string stateName)
+        public void StartTask(string stateName, bool useTrigger = false)
         {
             if (stateName == null) return;
 
             if (animationController != null)
             {
-                animationController.StartAnimation(stateName);
+                animationController.StartAnimation(stateName, useTrigger);
             }
 
             if (soundController != null)

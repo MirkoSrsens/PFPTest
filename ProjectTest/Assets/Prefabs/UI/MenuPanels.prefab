@@ -375,7 +375,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6281818027828315307}
-        m_MethodName: OnPlayfabLoginClicked
+        m_MethodName: OnClick_StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2202,7 +2202,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1448164830379606077}
+      - m_Target: {fileID: 6974931632620314689}
         m_MethodName: OnClick_UpgradeStat
         m_Mode: 1
         m_Arguments:
@@ -3559,7 +3559,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1448164830379606077}
+      - m_Target: {fileID: 3179805571250653653}
         m_MethodName: OnClick_UpgradeStat
         m_Mode: 1
         m_Arguments:
@@ -6218,7 +6218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2185751018626450972
 RectTransform:
   m_ObjectHideFlags: 0

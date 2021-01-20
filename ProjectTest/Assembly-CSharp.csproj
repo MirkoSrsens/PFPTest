@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Core\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Core\InjectContainer.cs" />
     <Compile Include="Assets\Scripts\Core\PlayfabManager.cs" />
     <Compile Include="Assets\Scripts\Core\SingletonBehaviour.cs" />
     <Compile Include="Assets\Scripts\Core\UIManager.cs" />
@@ -82,7 +83,6 @@
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\FModSoundController.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\State.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\StateController.cs" />
-    <Compile Include="Assets\Scripts\CustomPlugins\StateController\StateManager.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\StateSoundData.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\Security.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\TrustContractManager.cs" />
@@ -95,6 +95,15 @@
     <Compile Include="Assets\Scripts\Data\InjectionData\GameInformation.cs" />
     <Compile Include="Assets\Scripts\Data\InjectionData\IGameInformation.cs" />
     <Compile Include="Assets\Scripts\Data\Scriptable\IntroSequence.cs" />
+    <Compile Include="Assets\Scripts\Enviroment\ObstacleShard.cs" />
+    <Compile Include="Assets\Scripts\Enviroment\ObstacleSpawner.cs" />
+    <Compile Include="Assets\Scripts\Enviroment\ParalaxFollow.cs" />
+    <Compile Include="Assets\Scripts\Player\CameraFollow.cs" />
+    <Compile Include="Assets\Scripts\Player\ConstantMovement.cs" />
+    <Compile Include="Assets\Scripts\Player\Death.cs" />
+    <Compile Include="Assets\Scripts\Player\FlapWings.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerTriggers.cs" />
+    <Compile Include="Assets\Scripts\Player\PreparingPlayerState.cs" />
     <Compile Include="Assets\Scripts\UI\CatalogItem.cs" />
     <Compile Include="Assets\Scripts\UI\ChoseCurrencyPanel.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryItem.cs" />

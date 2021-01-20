@@ -15,10 +15,18 @@ namespace General.State
             Anima = GetComponentInChildren<Animator>();
         }
 
-        public void StartAnimation(string animationName)
+        public void StartAnimation(string animationName, bool useTrigger = false)
         {
             if (Anima == null) return;
-            Anima.SetBool(animationName, true);
+
+            if (useTrigger)
+            {
+                Anima.SetTrigger(animationName);
+            }
+            else
+            {
+                Anima.SetBool(animationName, true);
+            }
         }
 
         public void StopAnimation(string animationName)

@@ -657,6 +657,66 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6281818026854389183, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818026854389183, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818026854389183, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818026854389183, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818026854389183, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818026854389183, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818027297841546, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818027297841546, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818027297841546, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818027297841546, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818027297841546, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818027297841546, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6281818027828315306, guid: ed1f095455412eb459057fa110d73948,
         type: 3}
       propertyPath: m_Pivot.x
@@ -767,6 +827,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuPanels
       objectReference: {fileID: 0}
+    - target: {fileID: 6281818028880688953, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818028880688953, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818028880688953, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818028880688953, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818028880688953, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281818028880688953, guid: ed1f095455412eb459057fa110d73948,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7470740297833625437, guid: ed1f095455412eb459057fa110d73948,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -830,6 +920,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd2cee8a10ea58f43a905099ddeb223d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainMenuCamera: {fileID: 534669902}
 --- !u!114 &1448234104
 MonoBehaviour:
   m_ObjectHideFlags: 0
