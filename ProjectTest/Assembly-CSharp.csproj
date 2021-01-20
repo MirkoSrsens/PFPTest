@@ -10,8 +10,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{EDCE63F9-C566-F2C9-0A67-F4F110CD1D26}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -97,6 +96,8 @@
     <Compile Include="Assets\Scripts\Data\Scriptable\IntroSequence.cs" />
     <Compile Include="Assets\Scripts\UI\CatalogItem.cs" />
     <Compile Include="Assets\Scripts\UI\ChoseCurrencyPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\InventoryItem.cs" />
+    <Compile Include="Assets\Scripts\UI\InventoryItemDetails.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

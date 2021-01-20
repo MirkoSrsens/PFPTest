@@ -67,11 +67,27 @@ namespace Assets.Scripts.Core
         [SerializeField]
         private ChoseCurrencyPanel _choseCurrencyPanel;
 
+
+        [Header("InventoryItems elements")]
+        [SerializeField]
+        private GameObject _inventoryPanel;
+
+        [SerializeField]
+        private GameObject _inventoryItemListPanel;
+
+        [SerializeField]
+        private InventoryItem _inventoryItemPrefab;
+
+        [SerializeField]
+        private InventoryItemDetails _inventoryItemDetails;
+
+
         private void OnEnable()
         {
             PlayfabManager.Inst.RefreshCurrencyDataEvent += OnCurrencyDataRefresh;
             PlayfabManager.Inst.RefreshUserDetailsData += OnUserInfoAcquired;
             PlayfabManager.Inst.RefreshCatalogItems += OnCatalogItemRecieved;
+            PlayfabManager.Inst.RefreshPlayerInventory += OnInventoryItemsRecieved;
         }
 
         private void OnDisable()
@@ -79,6 +95,7 @@ namespace Assets.Scripts.Core
             PlayfabManager.Inst.RefreshCurrencyDataEvent -= OnCurrencyDataRefresh;
             PlayfabManager.Inst.RefreshUserDetailsData -= OnUserInfoAcquired;
             PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogItemRecieved;
+            PlayfabManager.Inst.RefreshPlayerInventory -= OnInventoryItemsRecieved;
         }
 
         public IEnumerator PlayIntroSequence()
@@ -124,13 +141,25 @@ namespace Assets.Scripts.Core
             CloseAllExcept(_shopPanel);
         }
 
+        public void ShowInventory(bool refreshInventory = true)
+        {
+            if (refreshInventory)
+            {
+                PlayfabManager.Inst.GetUserInventory();
+            }
+            CloseAllExcept(_inventoryPanel);
+        }
+
         private void CloseAllExcept(GameObject panel = null)
         {
+            //Careful this will trigger on enable/disable for activating element.
             _introPanel.SetActive(false);
             _loginPanel.SetActive(false);
             _mainMenuPanel.SetActive(false);
             _shopPanel.SetActive(false);
             _choseCurrencyPanel.gameObject.SetActive(false);
+            _inventoryPanel.SetActive(false);
+            _inventoryItemDetails.gameObject.SetActive(false);
 
             if (panel != null)
             {
@@ -195,11 +224,37 @@ namespace Assets.Scripts.Core
             }
         }
 
-        internal void DisplayChoseValueOption(CatalogItem catalogItem)
+        public void DisplayChoseValueOption(CatalogItem catalogItem)
         {
             // We dont want to close shop panel in background just for aesthetics reasons :D.
             _choseCurrencyPanel.gameObject.SetActive(true);
             _choseCurrencyPanel.SpawnCurrencyOptions(catalogItem);
+        }
+
+        /// <summary>
+        /// When we receive items we want to display them on screen
+        /// </summary>
+        /// <param name="sender">The object that triggered event.</param>
+        /// <param name="eventArgs">Parameters about inventory.</param>
+        private void OnInventoryItemsRecieved(object sender, PlayfabUserInventoryEventArgs eventArgs)
+        {
+            // Cleanup of old items in shop planner section.
+            for (int i = _inventoryItemListPanel.transform.childCount - 1; i >= 0; i--)
+            {
+                Destroy(_inventoryItemListPanel.transform.GetChild(i).gameObject);
+            }
+
+            foreach (var item in eventArgs.ItemInstances)
+            {
+                var inventoryItem = Instantiate(_inventoryItemPrefab, _inventoryItemListPanel.transform);
+                inventoryItem.PopulateInventoryItem(item);
+            }
+        }
+
+        public void OpenItemDetails(string itemId)
+        {
+            _inventoryItemDetails.ActivateItemDetails(itemId);
+            PlayfabManager.Inst.GetCatalogItems();
         }
 
         public void DisplayGenericPlayfabError(string message)

@@ -224,6 +224,35 @@ namespace Assets.Scripts.Core
                 });
         }
 
+        public void UserItem(string itemId)
+        {
+            var request = new ExecuteCloudScriptRequest()
+            {
+                FunctionName = "UseItem",
+                FunctionParameter = new { ItemId = itemId }
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                success =>
+                {
+                    // cloud script can execute but it doesnt mean
+                    // our logic did not throw something.
+                    if (success.Error == null)
+                    {
+                        // Just try to get it again refresh will then be performed.
+                        GetUserInventory();
+                    }
+                    else
+                    {
+                        Debug.LogError(success.Error.ToString());
+                    }
+                },
+                failed =>
+                {
+                    Debug.LogError(failed.ToString());
+                });
+        }
+
         public void BuyItem(string itemId, string currencySelected)
         {
             var request = new ExecuteCloudScriptRequest()

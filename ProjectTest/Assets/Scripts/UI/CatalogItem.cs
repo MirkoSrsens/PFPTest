@@ -15,12 +15,7 @@ namespace Assets.Scripts.UI
 
         public string ItemID { get; set; }
 
-        public List<string> currencyOptions { get; set; }
-
-        public void Awake()
-        {
-            currencyOptions = new List<string>();
-        }
+        public List<string> currencyOptions { get; set; } = new List<string>();
 
         public void OnClick_BuyItem()
         {
