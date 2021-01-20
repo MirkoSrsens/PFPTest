@@ -27,7 +27,16 @@ namespace Assets.Scripts.Player
         public override void Update_State()
         {
             base.Update_State();
-            if(Input.GetKeyDown(KeyCode.Space))
+            foreach (Touch touch in Input.touches)
+            {
+                if (touch.phase == TouchPhase.Began)
+                {
+                    controller.SwapState(this);
+                    return;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 controller.SwapState(this);
             }

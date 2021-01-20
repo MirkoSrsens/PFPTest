@@ -15,6 +15,9 @@ namespace Assets.Scripts.Player
         [InjectDiContainter]
         private IGameInformation gameInformation { get; set; }
 
+        [SerializeField]
+        private float _offsetFromplayer;
+
         protected override void Initialization_State()
         {
             base.Initialization_State();
@@ -23,7 +26,7 @@ namespace Assets.Scripts.Player
 
         public override void WhileActive_State()
         {
-            transform.position = Vector3.Lerp(transform.position, new Vector3(gameInformation.Player.transform.position.x, transform.position.y, transform.position.z), 100);
+            transform.position = Vector3.Lerp(transform.position, new Vector3(gameInformation.Player.transform.position.x + _offsetFromplayer, transform.position.y, transform.position.z), 100);
         }
     }
 }

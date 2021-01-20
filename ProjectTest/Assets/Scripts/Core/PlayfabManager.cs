@@ -4,6 +4,7 @@ using PlayFab.ClientModels;
 using System;
 using UnityEngine;
 using static Assets.Scripts.Data.Events.PlayfabCatalogItemsEventArgs;
+using static Assets.Scripts.Data.Events.PlayfabErrorHandlingEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabRefreshCurrencyEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserInfoEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserInventoryEventArgs;
@@ -42,6 +43,11 @@ namespace Assets.Scripts.Core
         /// Used when we get response on get user readonly data.
         /// </summary>
         public event PlayfabUserReadonlyDataEventHandler RefreshUserReadonlyData;
+
+        /// <summary>
+        /// Used for error handling.
+        /// </summary>
+        public event PlayfabErrorHandlingEventHandler OnErrorEvent;
 
         public string PlayfabCurrentUserID { get; private set; }
 
@@ -100,6 +106,7 @@ namespace Assets.Scripts.Core
                 err =>
                 {
                     Debug.LogError(err.ToString());
+
                     if (err.Error == PlayFabErrorCode.AccountNotFound || err.Error == PlayFabErrorCode.InvalidParams)
                     {
                         // Assume user name might be email actually. Don't trigger fail since it will be handled
@@ -108,6 +115,7 @@ namespace Assets.Scripts.Core
                         return;
                     }
 
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(err.ToString()));
                     if (failed != null)
                     {
                         failed(err);
@@ -150,6 +158,8 @@ namespace Assets.Scripts.Core
                 err =>
                 {
                     Debug.LogError(err.ToString());
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(err.ToString()));
+
                     if (failed == null)
                     {
                         failed(err);

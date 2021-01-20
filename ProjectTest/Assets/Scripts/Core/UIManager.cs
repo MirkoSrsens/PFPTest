@@ -86,6 +86,14 @@ namespace Assets.Scripts.Core
         [SerializeField]
         private UpgradePanel _upgradePanel;
 
+
+        [Header("Upgrade panel elements")]
+        [SerializeField]
+        private GameObject _errorPopUp;
+
+        [SerializeField]
+        private Text _errorMessage;
+
         private void OnEnable()
         {
             if (PlayfabManager.Inst != null)
@@ -95,6 +103,7 @@ namespace Assets.Scripts.Core
                 PlayfabManager.Inst.RefreshCatalogItems += OnCatalogItemRecieved;
                 PlayfabManager.Inst.RefreshPlayerInventory += OnInventoryItemsRecieved;
                 PlayfabManager.Inst.RefreshUserReadonlyData += OnStatsRecieved;
+                PlayfabManager.Inst.OnErrorEvent += DisplayErrorPopUp;
             }
         }
 
@@ -106,7 +115,7 @@ namespace Assets.Scripts.Core
                 PlayfabManager.Inst.RefreshUserDetailsData -= OnUserInfoAcquired;
                 PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogItemRecieved;
                 PlayfabManager.Inst.RefreshPlayerInventory -= OnInventoryItemsRecieved;
-                PlayfabManager.Inst.RefreshUserReadonlyData -= OnStatsRecieved;
+                PlayfabManager.Inst.OnErrorEvent -= DisplayErrorPopUp;
             }
         }
 
@@ -297,6 +306,13 @@ namespace Assets.Scripts.Core
                     CloseAllExcept(null);
                     GameManager.Inst.StartGame();
                 });
+        }
+
+        private void DisplayErrorPopUp(object sender, PlayfabErrorHandlingEventArgs eventArgs)
+        {
+            _errorPopUp.SetActive(true);
+            _errorPopUp.transform.parent.gameObject.SetActive(true);
+            _errorMessage.text = eventArgs.Message;
         }
 
         public void DisplayGenericPlayfabError(string message)
