@@ -82,12 +82,17 @@ namespace Assets.Scripts.Core
         private InventoryItemDetails _inventoryItemDetails;
 
 
+        [Header("Upgrade panel elements")]
+        [SerializeField]
+        private UpgradePanel _upgradePanel;
+
         private void OnEnable()
         {
             PlayfabManager.Inst.RefreshCurrencyDataEvent += OnCurrencyDataRefresh;
             PlayfabManager.Inst.RefreshUserDetailsData += OnUserInfoAcquired;
             PlayfabManager.Inst.RefreshCatalogItems += OnCatalogItemRecieved;
             PlayfabManager.Inst.RefreshPlayerInventory += OnInventoryItemsRecieved;
+            PlayfabManager.Inst.RefreshUserReadonlyData += OnStatsRecieved;
         }
 
         private void OnDisable()
@@ -96,6 +101,7 @@ namespace Assets.Scripts.Core
             PlayfabManager.Inst.RefreshUserDetailsData -= OnUserInfoAcquired;
             PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogItemRecieved;
             PlayfabManager.Inst.RefreshPlayerInventory -= OnInventoryItemsRecieved;
+            PlayfabManager.Inst.RefreshUserReadonlyData -= OnStatsRecieved;
         }
 
         public IEnumerator PlayIntroSequence()
@@ -150,6 +156,17 @@ namespace Assets.Scripts.Core
             CloseAllExcept(_inventoryPanel);
         }
 
+        public void ShowUpgrade(bool refreshUpgrades)
+        {
+            if(refreshUpgrades)
+            {
+                // Get data of stats.
+                PlayfabManager.Inst.GetUserReadonlyData();
+            }
+            CloseAllExcept(_upgradePanel.gameObject);
+        }
+
+
         private void CloseAllExcept(GameObject panel = null)
         {
             //Careful this will trigger on enable/disable for activating element.
@@ -160,6 +177,7 @@ namespace Assets.Scripts.Core
             _choseCurrencyPanel.gameObject.SetActive(false);
             _inventoryPanel.SetActive(false);
             _inventoryItemDetails.gameObject.SetActive(false);
+            _upgradePanel.gameObject.SetActive(false);
 
             if (panel != null)
             {
@@ -256,6 +274,15 @@ namespace Assets.Scripts.Core
             _inventoryItemDetails.ActivateItemDetails(itemId);
             PlayfabManager.Inst.GetCatalogItems();
         }
+
+        public void OnStatsRecieved(object sender, PlayfabUserReadonlyDataEventArgs eventArgs)
+        {
+            foreach(var item in eventArgs.Data)
+            {
+                _upgradePanel.SetStat(item.Key, item.Value.Value);
+            }
+        }
+
 
         public void DisplayGenericPlayfabError(string message)
         {

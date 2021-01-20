@@ -7,6 +7,7 @@ using static Assets.Scripts.Data.Events.PlayfabCatalogItemsEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabRefreshCurrencyEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserInfoEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserInventoryEventArgs;
+using static Assets.Scripts.Data.Events.PlayfabUserReadonlyDataEventArgs;
 
 namespace Assets.Scripts.Core
 {
@@ -36,6 +37,11 @@ namespace Assets.Scripts.Core
         /// When we get items we should display then on user UI so he can do whatever with them.
         /// </summary>
         public event PlayfabUserInventoryEventHandler RefreshPlayerInventory;
+
+        /// <summary>
+        /// Used when we get response on get user readonly data.
+        /// </summary>
+        public event PlayfabUserReadonlyDataEventHandler RefreshUserReadonlyData;
 
         public string PlayfabCurrentUserID { get; private set; }
 
@@ -217,6 +223,50 @@ namespace Assets.Scripts.Core
                     var inverntoryData = new PlayfabUserInventoryEventArgs(success.Inventory);
 
                     RefreshPlayerInventory(this, inverntoryData);
+                },
+                failed =>
+                {
+                    Debug.LogError(failed.ToString());
+                });
+        }
+
+        public void GetUserReadonlyData()
+        {
+            var request = new GetUserDataRequest();
+
+            PlayFabClientAPI.GetUserReadOnlyData(request,
+                success =>
+                {
+                    var eventArgs = new PlayfabUserReadonlyDataEventArgs(success.Data);
+
+                    RefreshUserReadonlyData(this, eventArgs);
+                },
+                failed =>
+                {
+                    Debug.LogError(failed.ToString());
+                });
+        }
+
+        public void UpgradeStat(string statToUpgrade, Action successCallback)
+        {
+            var request = new ExecuteCloudScriptRequest()
+            {
+                FunctionName = "UpgradeStat",
+                FunctionParameter = new { Stat = statToUpgrade }
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                success =>
+                {
+                    if(success.Error != null)
+                    {
+                        Debug.LogError(success.Error.ToString());
+                        return;
+                    }
+                    if(success != null)
+                    {
+                            successCallback();
+                    }
                 },
                 failed =>
                 {

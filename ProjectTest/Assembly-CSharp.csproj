@@ -91,6 +91,7 @@
     <Compile Include="Assets\Scripts\Data\Events\PlayfabRefreshCurrencyEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabUserInfoEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabUserInventoryEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Data\Events\PlayfabUserReadonlyDataEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\InjectionData\GameInformation.cs" />
     <Compile Include="Assets\Scripts\Data\InjectionData\IGameInformation.cs" />
     <Compile Include="Assets\Scripts\Data\Scriptable\IntroSequence.cs" />
@@ -98,6 +99,8 @@
     <Compile Include="Assets\Scripts\UI\ChoseCurrencyPanel.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryItem.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryItemDetails.cs" />
+    <Compile Include="Assets\Scripts\UI\StatButton.cs" />
+    <Compile Include="Assets\Scripts\UI\UpgradePanel.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
