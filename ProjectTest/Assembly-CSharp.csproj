@@ -67,6 +67,8 @@
     <Compile Include="Assets\Scripts\Core\PlayfabManager.cs" />
     <Compile Include="Assets\Scripts\Core\SingletonBehaviour.cs" />
     <Compile Include="Assets\Scripts\Core\UIManager.cs" />
+    <Compile Include="Assets\Scripts\Core\UIManagerCoreLogic.cs" />
+    <Compile Include="Assets\Scripts\Core\UIManagerEvents.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\DiContainer\ContainerData.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\DiContainer\DiContainerInitializorGet.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\DiContainer\DiContainerInitializorSet.cs" />
@@ -671,8 +673,14 @@
     <Reference Include="UnityEngine.Advertisements">
       <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/UnityEngine.Advertisements.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VectorGraphics">
+      <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/Unity.VectorGraphics.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Purchasing">
       <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/UnityEngine.Purchasing.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InternalAPIEditorBridge.003">
+      <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.003.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.Purchasing">
       <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/UnityEditor.Purchasing.dll</HintPath>
@@ -698,6 +706,9 @@
     <Reference Include="Unity.Rider.Editor">
       <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VectorGraphics.Editor">
+      <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/Unity.VectorGraphics.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.2D.Sprite.Editor">
       <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
@@ -712,6 +723,9 @@
     </Reference>
     <Reference Include="UnityEngine.Advertisements.Editor">
       <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/UnityEngine.Advertisements.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InternalAPIEngineBridge.003">
+      <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.003.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>E:/PFPTest/ProjectTest/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
