@@ -7,5 +7,7 @@ namespace Assets.Scripts.Data.InjectionData
         GameObject Player { get; set; }
 
         Camera Camera { get; set; }
+
+        int Score { get; set; }
     }
 }

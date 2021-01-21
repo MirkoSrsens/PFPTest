@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Data.Events;
+﻿using Assets.Scripts.CustomPlugins.Utility;
+using Assets.Scripts.Data.Events;
 using PlayFab;
 using PlayFab.ClientModels;
 using System;
@@ -6,6 +7,7 @@ using UnityEngine;
 using static Assets.Scripts.Data.Events.PlayfabCatalogItemsEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabErrorHandlingEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabRefreshCurrencyEventArgs;
+using static Assets.Scripts.Data.Events.PlayfabRefreshLeaderboardsDataEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserInfoEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserInventoryEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserReadonlyDataEventArgs;
@@ -48,6 +50,11 @@ namespace Assets.Scripts.Core
         /// Used for error handling.
         /// </summary>
         public event PlayfabErrorHandlingEventHandler OnErrorEvent;
+
+        /// <summary>
+        /// Used for error handling.
+        /// </summary>
+        public event PlayfabRefreshLeaderboardsDataEventHandler OnLeaderboardRefresh;
 
         public string PlayfabCurrentUserID { get; private set; }
 
@@ -154,7 +161,7 @@ namespace Assets.Scripts.Core
                     {
                         success(succ);
                     }
-                }, 
+                },
                 err =>
                 {
                     Debug.LogError(err.ToString());
@@ -174,7 +181,7 @@ namespace Assets.Scripts.Core
                 PlayFabId = PlayfabCurrentUserID,
             };
 
-            PlayFabClientAPI.GetAccountInfo(request, 
+            PlayFabClientAPI.GetAccountInfo(request,
                 success =>
                 {
                     var userInfo = new PlayfabUserInfoEventArgs()
@@ -197,7 +204,7 @@ namespace Assets.Scripts.Core
             PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(),
             success =>
             {
-                var eventData = new PlayfabRefreshCurrencyEventArgs(success.VirtualCurrency["EG"], 
+                var eventData = new PlayfabRefreshCurrencyEventArgs(success.VirtualCurrency["EG"],
                     success.VirtualCurrency["GL"],
                     success.VirtualCurrency["DM"]);
 
@@ -268,14 +275,14 @@ namespace Assets.Scripts.Core
             PlayFabClientAPI.ExecuteCloudScript(request,
                 success =>
                 {
-                    if(success.Error != null)
+                    if (success.Error != null)
                     {
                         Debug.LogError(success.Error.ToString());
                         return;
                     }
-                    if(success != null)
+                    if (success != null)
                     {
-                            successCallback();
+                        successCallback();
                     }
                 },
                 failed =>
@@ -355,7 +362,7 @@ namespace Assets.Scripts.Core
                     // our logic did not throw something.
                     if (success.Error == null)
                     {
-                        if(onSuccess != null)
+                        if (onSuccess != null)
                         {
                             onSuccess();
                         }
@@ -371,23 +378,54 @@ namespace Assets.Scripts.Core
                 });
         }
 
-        /// <summary>
-        ///  Handles errors from playfab. Made more sense to have it here than in UI manager.
-        /// </summary>
-        /// <param name="error"></param>
-        public string GenericMessage(PlayFabError error)
+        public void GetLeaderboardData()
         {
-            switch(error.Error)
+            var request = new GetLeaderboardRequest()
             {
-                case PlayFabErrorCode.AccountNotFound:
-                    return "Account was not found";
-                case PlayFabErrorCode.InvalidTitleId:
-                    return "Account was not found";
-                case PlayFabErrorCode.InvalidEmailOrPassword:
-                    return "Account was not found";
-            }
+                StartPosition = 0,
+                MaxResultsCount = 10,
+                StatisticName = "Highscore"
 
-            return string.Empty;
+            };
+
+            PlayFabClientAPI.GetLeaderboard(request,
+            success =>
+            {
+                var result = success.Leaderboard.MapToModel();
+                OnLeaderboardRefresh(this, new PlayfabRefreshLeaderboardsDataEventArgs(result));
+            },
+            failed =>
+            {
+                OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed.ToString()));
+            });
+        }
+
+        public void SubmitHighscore(string scoreToSubmit)
+        {
+            var request = new ExecuteCloudScriptRequest()
+            {
+                FunctionName = "SubmitHighscore",
+                FunctionParameter = new { Highscore = scoreToSubmit }
+            };
+
+            PlayFabClientAPI.ExecuteCloudScript(request,
+                success =>
+                {
+                    // cloud script can execute but it doesnt mean
+                    // our logic did not throw something.
+                    if (success.Error == null)
+                    {
+                        Debug.Log("Highscore submitted");
+                    }
+                    else
+                    {
+                        Debug.LogError(success.Error.ToString());
+                    }
+                },
+                failed =>
+                {
+                    Debug.LogError(failed.ToString());
+                });
         }
     }
 }

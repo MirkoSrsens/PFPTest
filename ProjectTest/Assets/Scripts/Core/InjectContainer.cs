@@ -10,5 +10,10 @@ namespace Assets.Scripts.Core
         {
             DiContainerInitializor.Container.BindInstance<IGameInformation, GameInformation>().AsSingle();
         }
+
+        private void OnDestroy()
+        {
+            DiContainerInitializor.Container = new System.Collections.Generic.Dictionary<System.Type, ContainerData>();
+        }
     }
 }

@@ -10,6 +10,7 @@ public enum GameStates
     Login,
     MainMenu,
     Playing,
+    Lose,
 }
 
 namespace Assets.Scripts.Core
@@ -63,16 +64,43 @@ namespace Assets.Scripts.Core
         public void StartMainMenuState()
         {
             CurrentStateOfGame = GameStates.MainMenu;
+            mainMenuCamera.SetActive(true);
             PlayfabManager.Inst.GetUserData();
             PlayfabManager.Inst.GetCurrencyData();
+
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                Scene scene = SceneManager.GetSceneAt(i);
+                if ((scene.name == "FlappyBird" && scene.isLoaded))
+                {
+                    SceneManager.UnloadSceneAsync(scene);
+                }
+            }
+
             UIManager.Inst.ShowMainMenu();
         }
 
-        public void StartGame()
+        public void OnStartGame()
         {
             CurrentStateOfGame = GameStates.Playing;
             mainMenuCamera.SetActive(false);
+
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                Scene scene = SceneManager.GetSceneAt(i);
+                if ((scene.name == "FlappyBird" && scene.isLoaded))
+                {
+                    SceneManager.UnloadSceneAsync(scene);
+                }
+            }
             SceneManager.LoadScene("FlappyBird", LoadSceneMode.Additive);
+            UIManager.Inst.ShowInGamePannel();
+        }
+
+        public void OnGameLose()
+        {
+            CurrentStateOfGame = GameStates.Lose;
+            UIManager.Inst.ShowLoseScreen();
         }
     }
 }

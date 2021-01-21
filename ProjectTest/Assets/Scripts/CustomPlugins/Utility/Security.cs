@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 
 public class Security
@@ -52,5 +49,16 @@ public class Security
         memoryStream.Close();
         cryptoStream.Close();
         return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
+    }
+
+    /// <summary>
+    /// Just simple encoding to give minimum protection against cheaters and attempts to modify
+    /// high score. Playfab has some issues with custom javascript libraries for RSA :I.
+    /// </summary>
+    /// <param name="value">Value to convert.</param>
+    /// <returns>Encoded string.</returns>
+    public static string MagicHat(string value)
+    {
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
     }
 }

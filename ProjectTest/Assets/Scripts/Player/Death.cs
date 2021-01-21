@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Data.InjectionData;
+﻿using Assets.Scripts.Core;
+using Assets.Scripts.Data.InjectionData;
 using DiContainerLibrary.DiContainer;
 using General.State;
 using System;
@@ -45,6 +46,7 @@ namespace Assets.Scripts.Player
             cameraFollowState.controller.EndState(cameraFollowState);
             yield return new WaitForSeconds(2);
             _rigb.constraints = RigidbodyConstraints2D.FreezeAll;
+            GameManager.Inst.OnGameLose();
         }
     }
 }

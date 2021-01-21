@@ -84,12 +84,14 @@
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\State.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\StateController.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\StateSoundData.cs" />
+    <Compile Include="Assets\Scripts\CustomPlugins\Utility\Mappings.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\Security.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\TrustContractManager.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\UtilityFunctions.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabCatalogItemsEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabErrorHandlingEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabRefreshCurrencyEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Data\Events\PlayfabRefreshLeaderboardsDataEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabUserInfoEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabUserInventoryEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabUserReadonlyDataEventArgs.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Assets\Scripts\UI\ChoseCurrencyPanel.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryItem.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryItemDetails.cs" />
+    <Compile Include="Assets\Scripts\UI\LeaderboardEntity.cs" />
     <Compile Include="Assets\Scripts\UI\StatButton.cs" />
     <Compile Include="Assets\Scripts\UI\UpgradePanel.cs" />
     <Reference Include="UnityEngine">

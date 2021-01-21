@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.Data.Events;
+using Assets.Scripts.Data.InjectionData;
 using Assets.Scripts.Data.Scriptable;
 using Assets.Scripts.UI;
+using DiContainerLibrary.DiContainer;
 using System;
 using System.Collections;
 using System.Text;
@@ -35,6 +37,22 @@ namespace Assets.Scripts.Core
 
         [SerializeField]
         private InputField _password;
+
+        [Header("Register elements")]
+        [SerializeField]
+        private GameObject _registerPanel;
+
+        [SerializeField]
+        private InputField _registerUsername;
+
+        [SerializeField]
+        private InputField _registerEmail;
+
+        [SerializeField]
+        private InputField _registerPassword;
+
+        [SerializeField]
+        private InputField _registerPasswordConfirm;
 
         [Header("MainMenu elements")]
         [SerializeField]
@@ -87,12 +105,41 @@ namespace Assets.Scripts.Core
         private UpgradePanel _upgradePanel;
 
 
-        [Header("Upgrade panel elements")]
+        [Header("Error panel elements")]
         [SerializeField]
         private GameObject _errorPopUp;
 
         [SerializeField]
         private Text _errorMessage;
+
+
+        [Header("Lose panel elements")]
+        [SerializeField]
+        private GameObject _losePanel;
+
+        [SerializeField]
+        private Button _submirButton;
+
+        [SerializeField]
+        private Text _loseHighscoreText;
+
+        [Header("In game UI elements")]
+        [SerializeField]
+        private GameObject _inGamePanel;
+
+        [SerializeField]
+        private Text _inGameHighscore;
+
+        [Header("Leaderboard UI elements")]
+        [SerializeField]
+        private GameObject _leaderboardPanel;
+
+        [SerializeField]
+        private GameObject _leaderboardListPanel;
+
+        [SerializeField]
+        private LeaderboardEntity _leaderBoardEntityPrefab;
+
 
         private void OnEnable()
         {
@@ -104,6 +151,7 @@ namespace Assets.Scripts.Core
                 PlayfabManager.Inst.RefreshPlayerInventory += OnInventoryItemsRecieved;
                 PlayfabManager.Inst.RefreshUserReadonlyData += OnStatsRecieved;
                 PlayfabManager.Inst.OnErrorEvent += DisplayErrorPopUp;
+                PlayfabManager.Inst.OnLeaderboardRefresh += OnLeaderboardDataRecieved;
             }
         }
 
@@ -116,6 +164,7 @@ namespace Assets.Scripts.Core
                 PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogItemRecieved;
                 PlayfabManager.Inst.RefreshPlayerInventory -= OnInventoryItemsRecieved;
                 PlayfabManager.Inst.OnErrorEvent -= DisplayErrorPopUp;
+                PlayfabManager.Inst.OnLeaderboardRefresh -= OnLeaderboardDataRecieved;
             }
         }
 
@@ -162,6 +211,13 @@ namespace Assets.Scripts.Core
             CloseAllExcept(_shopPanel);
         }
 
+        public void ShowLoseScreen()
+        {
+            // Don't over complicate just copy one value to another.
+            _loseHighscoreText.text = _inGameHighscore.text;
+            CloseAllExcept(_losePanel);
+        }
+
         public void ShowInventory(bool refreshInventory = true)
         {
             if (refreshInventory)
@@ -171,9 +227,9 @@ namespace Assets.Scripts.Core
             CloseAllExcept(_inventoryPanel);
         }
 
-        public void ShowUpgrade(bool refreshUpgrades)
+        public void ShowUpgrade(bool refreshData)
         {
-            if(refreshUpgrades)
+            if(refreshData)
             {
                 // Get data of stats.
                 PlayfabManager.Inst.GetUserReadonlyData();
@@ -181,6 +237,28 @@ namespace Assets.Scripts.Core
             CloseAllExcept(_upgradePanel.gameObject);
         }
 
+        public void ShowInGamePannel()
+        {
+            // just reset UI number if any exists.
+            _inGameHighscore.text = "0";
+
+            CloseAllExcept(_inGamePanel);
+        }
+
+        public void ShowLeaderboard(bool refreshData = true)
+        {
+            if(refreshData)
+            {
+                PlayfabManager.Inst.GetLeaderboardData();
+            }
+
+            CloseAllExcept(_leaderboardPanel);
+        }
+
+        public void ShowRegister()
+        {
+            CloseAllExcept(_registerPanel);
+        }
 
         private void CloseAllExcept(GameObject panel = null)
         {
@@ -193,6 +271,9 @@ namespace Assets.Scripts.Core
             _inventoryPanel.SetActive(false);
             _inventoryItemDetails.gameObject.SetActive(false);
             _upgradePanel.gameObject.SetActive(false);
+            _losePanel.gameObject.SetActive(false);
+            _inGamePanel.gameObject.SetActive(false);
+            _leaderboardPanel.gameObject.SetActive(false);
 
             if (panel != null)
             {
@@ -206,11 +287,7 @@ namespace Assets.Scripts.Core
                 success =>
                 {
                     GameManager.Inst.StartMainMenuState();
-                },
-                failed =>
-                {
-                    DisplayGenericPlayfabError(PlayfabManager.Inst.GenericMessage(failed));
-                });
+                },null);
         }
 
         private void OnCurrencyDataRefresh(object sender, PlayfabRefreshCurrencyEventArgs eventArgs)
@@ -298,14 +375,56 @@ namespace Assets.Scripts.Core
             }
         }
 
+        public void OnLeaderboardDataRecieved(object sender, PlayfabRefreshLeaderboardsDataEventArgs eventArgs)
+        {
+            const int minimumNumberOfPlaces = 10;
+            var current = 0;
+
+            foreach(var item in eventArgs.Data)
+            {
+                var entity = Instantiate(_leaderBoardEntityPrefab, _leaderboardListPanel.transform);
+                entity.Setup(item);
+                current++;
+            }
+
+            for(int i = current; i<minimumNumberOfPlaces; i++)
+            {
+                var entity = Instantiate(_leaderBoardEntityPrefab, _leaderboardListPanel.transform);
+                entity.Setup(new CustomPlugins.Utility.LeaderboardData("-", 0, i));
+            }
+        }
+
         public void OnClick_StartGame()
         {
             PlayfabManager.Inst.StartGameRequest(
                 () =>
                 {
                     CloseAllExcept(null);
-                    GameManager.Inst.StartGame();
+                    GameManager.Inst.OnStartGame();
                 });
+        }
+
+        public void GoToMainMenu()
+        {
+            GameManager.Inst.StartMainMenuState();
+        }
+
+        public void UpdateInGameScore(int number)
+        {
+            _inGameHighscore.text = number.ToString();
+        }
+
+        public void SubmitHighScore()
+        {
+            // Perform decrypt and then encrypt in AES and send that to server which
+            // contains decrypt algorithm. RSA unfortunately requires some libraries 
+            // on cloud which are not available.
+            var gameInformation = DiContainerInitializor.Register<IGameInformation>();
+
+            if(gameInformation != null)
+            {
+                PlayfabManager.Inst.SubmitHighscore(Security.MagicHat(gameInformation.Score.ToString()));
+            }
         }
 
         private void DisplayErrorPopUp(object sender, PlayfabErrorHandlingEventArgs eventArgs)
@@ -313,7 +432,7 @@ namespace Assets.Scripts.Core
             _errorPopUp.SetActive(true);
             _errorPopUp.transform.parent.gameObject.SetActive(true);
             _errorMessage.text = eventArgs.Message;
-        }
+        } 
 
         public void DisplayGenericPlayfabError(string message)
         {

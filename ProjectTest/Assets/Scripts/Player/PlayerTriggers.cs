@@ -1,4 +1,7 @@
-﻿using General.State;
+﻿using Assets.Scripts.Core;
+using Assets.Scripts.Data.InjectionData;
+using DiContainerLibrary.DiContainer;
+using General.State;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,24 +16,28 @@ namespace Assets.Scripts.Player
     /// </summary>
     public class PlayerTriggers : MonoBehaviour
     {
+        private IGameInformation gameInformation { get; set; }
+
         private const string Point = "Point";
         private const string Killer = "Killer";
 
         private Death deathState { get; set; }
         private StateController stateController { get; set; }
 
-        private void Awake()
+        private void Start()
         {
+            // Example of non attribute injection.
+            gameInformation = DiContainerInitializor.Register<IGameInformation>();
             deathState = GetComponent<Death>();
             stateController = GetComponent<StateController>();
         }
 
-
-        private void OnTriggerEnter(UnityEngine.Collider other)
+        private void OnTriggerEnter2D(UnityEngine.Collider2D other)
         {
             if (other.gameObject.tag == Point)
             {
-
+                gameInformation.Score += 1;
+                UIManager.Inst.UpdateInGameScore(gameInformation.Score);
             }
         }
 
