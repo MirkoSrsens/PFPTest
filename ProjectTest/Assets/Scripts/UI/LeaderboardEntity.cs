@@ -29,7 +29,7 @@ namespace Assets.Scripts.UI
         {
             if(PlayfabManager.Inst != null)
             {
-                PlayfabManager.Inst.OnLeaderboardRefresh += nDestroy;
+                PlayfabManager.Inst.OnLeaderboardRefresh -= nDestroy;
             }
         }
 

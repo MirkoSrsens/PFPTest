@@ -6,6 +6,7 @@ using System;
 using UnityEngine;
 using static Assets.Scripts.Data.Events.PlayfabCatalogItemsEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabErrorHandlingEventArgs;
+using static Assets.Scripts.Data.Events.PlayfabOnUserRegisteredEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabRefreshCurrencyEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabRefreshLeaderboardsDataEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabUserInfoEventArgs;
@@ -55,6 +56,11 @@ namespace Assets.Scripts.Core
         /// Used for error handling.
         /// </summary>
         public event PlayfabRefreshLeaderboardsDataEventHandler OnLeaderboardRefresh;
+
+        /// <summary>
+        /// Triggers when new user is registered.
+        /// </summary>
+        public event PlayfabOnUserRegisteredEventHandler OnUserRegistered;
 
         public string PlayfabCurrentUserID { get; private set; }
 
@@ -426,6 +432,35 @@ namespace Assets.Scripts.Core
                 {
                     Debug.LogError(failed.ToString());
                 });
+        }
+
+        public void RegisterUser(RegisterData data)
+        {
+            var request = new RegisterPlayFabUserRequest()
+            {
+                DisplayName = data.Username,
+                Username = data.Username,
+                Email = data.Email,
+                Password = data.Password
+            };
+
+            PlayFabClientAPI.RegisterPlayFabUser(request,
+                success =>
+                {
+                    OnUserRegistered(this, new PlayfabOnUserRegisteredEventArgs());
+                },
+                failed =>
+                {
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed.ToString()));
+                });
+        }
+
+        public void SignOut()
+        {
+            PlayFabClientAPI.ForgetAllCredentials();
+            PlayerPrefs.DeleteKey(PLAYFAB_PASSWORD);
+            PlayerPrefs.DeleteKey(PLAYFAB_USERNAME);
+            GameManager.Inst.StartLoginState();
         }
     }
 }

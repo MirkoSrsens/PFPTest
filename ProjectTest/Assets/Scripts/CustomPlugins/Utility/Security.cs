@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Assets.Scripts.CustomPlugins.Utility;
+using System;
 using System.IO;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -60,5 +62,47 @@ public class Security
     public static string MagicHat(string value)
     {
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+    }
+
+    public static void ValidateData(RegisterData data, Action success, Action<string> failed)
+    {
+        if(data.Password != data.PasswordRepeated)
+        {
+            failed("Passwords needs to match");
+            return;
+        }
+
+        if(data.Password.Length < 6)
+        {
+            failed("Password needs to be at least 6 letters long");
+            return;
+        }
+        
+        if(!IsEmailValid(data.Email))
+        {
+            failed("Not valid email!");
+            return;
+        }
+
+        if(data.Username.Length < 5)
+        {
+            failed("Username must have more than 5 letters");
+            return;
+        }
+
+        success();
+    }
+
+    public static bool IsEmailValid(string emailaddress)
+    {
+        try
+        {
+            var m = new MailAddress(emailaddress);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Data.Events;
+﻿using Assets.Scripts.CustomPlugins.Utility;
+using Assets.Scripts.Data.Events;
 using Assets.Scripts.Data.InjectionData;
 using Assets.Scripts.Data.Scriptable;
 using Assets.Scripts.UI;
@@ -23,15 +24,13 @@ namespace Assets.Scripts.Core
         [SerializeField]
         private float _alphaChangeSpeed;
 
-        [Header("Playfab Data")]
+        [Header("Login elements")]
+        [SerializeField]
+        private GameObject _signInPanel;
 
         [SerializeField]
         private GameObject _loginPanel;
 
-        [SerializeField]
-        private GameObject _genericErrorBox;
-
-        [Header("Login elements")]
         [SerializeField]
         private InputField _username;
 
@@ -105,13 +104,9 @@ namespace Assets.Scripts.Core
         private UpgradePanel _upgradePanel;
 
 
-        [Header("Error panel elements")]
+        [Header("Info panel elements")]
         [SerializeField]
-        private GameObject _errorPopUp;
-
-        [SerializeField]
-        private Text _errorMessage;
-
+        private InfoPanel _infoPanel;
 
         [Header("Lose panel elements")]
         [SerializeField]
@@ -152,6 +147,7 @@ namespace Assets.Scripts.Core
                 PlayfabManager.Inst.RefreshUserReadonlyData += OnStatsRecieved;
                 PlayfabManager.Inst.OnErrorEvent += DisplayErrorPopUp;
                 PlayfabManager.Inst.OnLeaderboardRefresh += OnLeaderboardDataRecieved;
+                PlayfabManager.Inst.OnUserRegistered += OnUserRegistered;
             }
         }
 
@@ -165,6 +161,7 @@ namespace Assets.Scripts.Core
                 PlayfabManager.Inst.RefreshPlayerInventory -= OnInventoryItemsRecieved;
                 PlayfabManager.Inst.OnErrorEvent -= DisplayErrorPopUp;
                 PlayfabManager.Inst.OnLeaderboardRefresh -= OnLeaderboardDataRecieved;
+                PlayfabManager.Inst.OnUserRegistered -= OnUserRegistered;
             }
         }
 
@@ -194,7 +191,7 @@ namespace Assets.Scripts.Core
         /// Maybe in the future other logic will go in <see cref="ShowLoginScreen"/> and <see cref="CloseLoginScreen"/>.
         public void ShowLoginScreen()
         {
-            CloseAllExcept(_loginPanel);
+            CloseAllExcept(null, new GameObject[] { _signInPanel, _loginPanel });
         }
 
         public void ShowMainMenu()
@@ -257,12 +254,14 @@ namespace Assets.Scripts.Core
 
         public void ShowRegister()
         {
-            CloseAllExcept(_registerPanel);
+            CloseAllExcept(null, new GameObject[] { _signInPanel, _registerPanel });
         }
 
-        private void CloseAllExcept(GameObject panel = null)
+        public void CloseAllExcept(GameObject panel = null, GameObject[] activate = null)
         {
             //Careful this will trigger on enable/disable for activating element.
+            _signInPanel.gameObject.SetActive(false);
+            _registerPanel.gameObject.SetActive(false);
             _introPanel.SetActive(false);
             _loginPanel.SetActive(false);
             _mainMenuPanel.SetActive(false);
@@ -274,10 +273,19 @@ namespace Assets.Scripts.Core
             _losePanel.gameObject.SetActive(false);
             _inGamePanel.gameObject.SetActive(false);
             _leaderboardPanel.gameObject.SetActive(false);
+            _infoPanel.gameObject.SetActive(false);
 
             if (panel != null)
             {
                 panel.SetActive(true);
+            }
+
+            if(activate != null)
+            {
+                foreach(var item in activate)
+                {
+                    item.SetActive(true);
+                }
             }
         }
 
@@ -429,14 +437,33 @@ namespace Assets.Scripts.Core
 
         private void DisplayErrorPopUp(object sender, PlayfabErrorHandlingEventArgs eventArgs)
         {
-            _errorPopUp.SetActive(true);
-            _errorPopUp.transform.parent.gameObject.SetActive(true);
-            _errorMessage.text = eventArgs.Message;
+            _infoPanel.Setup(eventArgs.Message, eventArgs.OpenAfter);
         } 
 
-        public void DisplayGenericPlayfabError(string message)
+        public void OnClick_RegisterUser()
         {
+            var data = new RegisterData(_registerUsername.text, _registerEmail.text, _registerPassword.text, _registerPasswordConfirm.text);
+
+            Security.ValidateData(data,
+                () =>
+                {
+                    PlayfabManager.Inst.RegisterUser(data);
+                },
+                failed =>
+                {
+                    _infoPanel.Setup(failed);
+                });
         }
 
+        private void OnUserRegistered(object sender, PlayfabOnUserRegisteredEventArgs eventArgs)
+        {
+            ShowLoginScreen();
+            _infoPanel.Setup("New user registered, please login!");
+        }
+
+        public void OnClick_SignOut()
+        {
+            PlayfabManager.Inst.SignOut();
+        }
     }
 }

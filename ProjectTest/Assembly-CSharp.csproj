@@ -90,6 +90,7 @@
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\UtilityFunctions.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabCatalogItemsEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabErrorHandlingEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Data\Events\PlayfabOnUserRegisteredEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabRefreshCurrencyEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabRefreshLeaderboardsDataEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabUserInfoEventArgs.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Assets\Scripts\Player\PreparingPlayerState.cs" />
     <Compile Include="Assets\Scripts\UI\CatalogItem.cs" />
     <Compile Include="Assets\Scripts\UI\ChoseCurrencyPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\InfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryItem.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryItemDetails.cs" />
     <Compile Include="Assets\Scripts\UI\LeaderboardEntity.cs" />
