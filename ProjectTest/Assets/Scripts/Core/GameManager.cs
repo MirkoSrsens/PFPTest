@@ -29,8 +29,6 @@ namespace Assets.Scripts.Core
         private void Start()
         {
             // Just so im sure physics wont be wierd when i go from 300 fps on pc to something on mobile.
-            Application.targetFrameRate = 60;
-            QualitySettings.vSyncCount = 0;
             CurrentStateOfGame = GameStates.Intro;
 
             // Dont want to use this in editor, takes time.
