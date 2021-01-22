@@ -6,8 +6,8 @@ namespace Assets.Scripts.UI
 {
     public enum StatType
     {
-        Health = 0,
-        Speed = 1,
+        WingFlapsStrenght = 0,
+        MovementSpeed = 1,
         GoldMultiplier = 2,
     }
     public class StatButton : MonoBehaviour

@@ -18,7 +18,7 @@ public class StateSoundData : MonoBehaviour
     /// <summary>
     /// Gets or sets state related to this sound
     /// </summary>
-    public State State { get; set; }
+    public State State;
 
     /// <summary>
     /// Protect data from reseting

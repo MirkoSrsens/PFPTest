@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts.CustomPlugins.Utility;
-using Assets.Scripts.Data.InjectionData;
 using Assets.Scripts.UI;
-using DiContainerLibrary.DiContainer;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,6 +39,7 @@ namespace Assets.Scripts.Core
 
         public void ShowMainMenu()
         {
+            PlayfabManager.Inst.GetCurrencyData();
             CloseAllExcept(_mainMenuPanel);
         }
 
@@ -60,12 +59,9 @@ namespace Assets.Scripts.Core
             CloseAllExcept(_losePanel);
         }
 
-        public void ShowInventory(bool refreshInventory = true)
+        public void ShowInventory()
         {
-            if (refreshInventory)
-            {
-                PlayfabManager.Inst.GetUserInventory();
-            }
+            PlayfabManager.Inst.GetUserInventory();
             CloseAllExcept(_inventoryPanel);
         }
 
@@ -102,6 +98,26 @@ namespace Assets.Scripts.Core
             CloseAllExcept(null, new GameObject[] { _signInPanel, _registerPanel });
         }
 
+        /// <summary>
+        /// This value will be used if multiple request are being loaded.
+        /// Basicly it will prevent closing of loading screen until all requests are done.
+        /// </summary>
+        private int depth = 0;
+        public void ShowLoadingPanel()
+        {
+            depth++;
+            _loadingPanel.SetActive(true);
+        }
+
+        public void HideLoadingPanel()
+        {
+            depth--;
+            if (depth == 0)
+            {
+                _loadingPanel.SetActive(false);
+            }
+        }
+
         public void CloseAllExcept(GameObject panel = null, GameObject[] activate = null)
         {
             //Careful this will trigger on enable/disable for activating element.
@@ -119,6 +135,7 @@ namespace Assets.Scripts.Core
             _inGamePanel.gameObject.SetActive(false);
             _leaderboardPanel.gameObject.SetActive(false);
             _infoPanel.gameObject.SetActive(false);
+            _loadingPanel.gameObject.SetActive(false);
 
             if (panel != null)
             {
@@ -156,14 +173,13 @@ namespace Assets.Scripts.Core
             PlayfabManager.Inst.GetCatalogItems();
         }
 
-
         public void OnClick_StartGame()
         {
             PlayfabManager.Inst.StartGameRequest(
-                () =>
+                (id) =>
                 {
                     CloseAllExcept(null);
-                    GameManager.Inst.OnStartGame();
+                    GameManager.Inst.OnStartGame(id);
                 });
         }
 
@@ -175,19 +191,6 @@ namespace Assets.Scripts.Core
         public void UpdateInGameScore(int number)
         {
             _inGameHighscore.text = number.ToString();
-        }
-
-        public void SubmitHighScore()
-        {
-            // Perform decrypt and then encrypt in AES and send that to server which
-            // contains decrypt algorithm. RSA unfortunately requires some libraries 
-            // on cloud which are not available.
-            var gameInformation = DiContainerInitializor.Register<IGameInformation>();
-
-            if (gameInformation != null)
-            {
-                PlayfabManager.Inst.SubmitHighscore(Security.MagicHat(gameInformation.Score.ToString()));
-            }
         }
 
         public void OnClick_RegisterUser()

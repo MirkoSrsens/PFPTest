@@ -9,14 +9,16 @@ namespace Assets.Scripts.Core
         {
             if (PlayfabManager.Inst != null)
             {
-                PlayfabManager.Inst.RefreshCurrencyDataEvent += OnCurrencyDataRefresh;
-                PlayfabManager.Inst.RefreshUserDetailsData += OnUserInfoAcquired;
-                PlayfabManager.Inst.RefreshCatalogItems += OnCatalogItemRecieved;
-                PlayfabManager.Inst.RefreshPlayerInventory += OnInventoryItemsRecieved;
-                PlayfabManager.Inst.RefreshUserReadonlyData += OnStatsRecieved;
+                PlayfabManager.Inst.OnRefreshCurrencyDataEvent += OnCurrencyDataRefresh;
+                PlayfabManager.Inst.OnRefreshUserDetailsData += OnUserInfoAcquired;
+                PlayfabManager.Inst.OnRefreshCatalogItems += OnCatalogItemRecieved;
+                PlayfabManager.Inst.OnRefreshPlayerInventory += OnInventoryItemsRecieved;
+                PlayfabManager.Inst.OnRefreshUserReadonlyData += OnStatsRecieved;
                 PlayfabManager.Inst.OnErrorEvent += DisplayErrorPopUp;
                 PlayfabManager.Inst.OnLeaderboardRefresh += OnLeaderboardDataRecieved;
                 PlayfabManager.Inst.OnUserRegistered += OnUserRegistered;
+                PlayfabManager.Inst.OnApiCallStart += ShowLoadingPanel;
+                PlayfabManager.Inst.OnApiCallEnd += HideLoadingPanel;
             }
         }
 
@@ -24,13 +26,15 @@ namespace Assets.Scripts.Core
         {
             if (PlayfabManager.Inst != null)
             {
-                PlayfabManager.Inst.RefreshCurrencyDataEvent -= OnCurrencyDataRefresh;
-                PlayfabManager.Inst.RefreshUserDetailsData -= OnUserInfoAcquired;
-                PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogItemRecieved;
-                PlayfabManager.Inst.RefreshPlayerInventory -= OnInventoryItemsRecieved;
+                PlayfabManager.Inst.OnRefreshCurrencyDataEvent -= OnCurrencyDataRefresh;
+                PlayfabManager.Inst.OnRefreshUserDetailsData -= OnUserInfoAcquired;
+                PlayfabManager.Inst.OnRefreshCatalogItems -= OnCatalogItemRecieved;
+                PlayfabManager.Inst.OnRefreshPlayerInventory -= OnInventoryItemsRecieved;
                 PlayfabManager.Inst.OnErrorEvent -= DisplayErrorPopUp;
                 PlayfabManager.Inst.OnLeaderboardRefresh -= OnLeaderboardDataRecieved;
                 PlayfabManager.Inst.OnUserRegistered -= OnUserRegistered;
+                PlayfabManager.Inst.OnApiCallStart -= ShowLoadingPanel;
+                PlayfabManager.Inst.OnApiCallEnd -= HideLoadingPanel;
             }
         }
 
@@ -78,12 +82,6 @@ namespace Assets.Scripts.Core
         /// <param name="eventArgs">Parameters about inventory.</param>
         private void OnInventoryItemsRecieved(object sender, PlayfabUserInventoryEventArgs eventArgs)
         {
-            // Cleanup of old items in shop planner section.
-            for (int i = _inventoryItemListPanel.transform.childCount - 1; i >= 0; i--)
-            {
-                Destroy(_inventoryItemListPanel.transform.GetChild(i).gameObject);
-            }
-
             foreach (var item in eventArgs.ItemInstances)
             {
                 var inventoryItem = Instantiate(_inventoryItemPrefab, _inventoryItemListPanel.transform);
@@ -120,7 +118,8 @@ namespace Assets.Scripts.Core
 
         private void DisplayErrorPopUp(object sender, PlayfabErrorHandlingEventArgs eventArgs)
         {
-            _infoPanel.Setup(eventArgs.Message, eventArgs.OpenAfter);
+            var split = eventArgs.Message.Split('\n');
+            _infoPanel.Setup(split[0]);
         }
 
         private void OnUserRegistered(object sender, PlayfabOnUserRegisteredEventArgs eventArgs)

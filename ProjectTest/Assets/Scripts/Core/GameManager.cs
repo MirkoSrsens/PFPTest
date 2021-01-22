@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Assets.Scripts.Data.InjectionData;
+using DiContainerLibrary.DiContainer;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,17 +28,29 @@ namespace Assets.Scripts.Core
         /// </summary>
         public GameStates CurrentStateOfGame { get; set; }
 
+        /// <summary>
+        /// Holds key to session allowing us to check if anyone messed with game.
+        /// </summary>
+        private string _sessionId;
+
+        /// <summary>
+        /// Encryptor for session Id.
+        /// </summary>
+        private string SessionId { get { return Security.Decrypt(_sessionId); } set { _sessionId = Security.Encrypt(value.ToString()); } }
+
+
         private void Start()
         {
-            // Just so im sure physics wont be wierd when i go from 300 fps on pc to something on mobile.
             CurrentStateOfGame = GameStates.Intro;
-
+            // This will make sure nobody changed stats in lobby and will trigger application of the stats to game. 
+            SceneManager.sceneLoaded += new UnityEngine.Events.UnityAction<Scene, LoadSceneMode>((a,b) => PlayfabManager.Inst.GetUserReadonlyData());
+            
             // Dont want to use this in editor, takes time.
-////#if !UNITY_EDITOR
-////            //TrustContractManager.Inst.Sign(UIManager.Inst.PlayIntroSequence(), StartLoginState);
-////#else
+#if !UNITY_EDITOR && ASDESDEAFAFA
+           //TrustContractManager.Inst.Sign(UIManager.Inst.PlayIntroSequence(), StartLoginState);
+#else
             StartLoginState();
-//#endif
+#endif
         }
 
         public void StartLoginState()
@@ -63,8 +77,7 @@ namespace Assets.Scripts.Core
         {
             CurrentStateOfGame = GameStates.MainMenu;
             mainMenuCamera.SetActive(true);
-            PlayfabManager.Inst.GetUserData();
-            PlayfabManager.Inst.GetCurrencyData();
+            PlayfabManager.Inst.GetUserAccountInformationData();
 
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -78,10 +91,11 @@ namespace Assets.Scripts.Core
             UIManager.Inst.ShowMainMenu();
         }
 
-        public void OnStartGame()
+        public void OnStartGame(string id)
         {
             CurrentStateOfGame = GameStates.Playing;
             mainMenuCamera.SetActive(false);
+            SessionId = id;
 
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -92,13 +106,31 @@ namespace Assets.Scripts.Core
                 }
             }
             SceneManager.LoadScene("FlappyBird", LoadSceneMode.Additive);
+
             UIManager.Inst.ShowInGamePannel();
         }
+
+
 
         public void OnGameLose()
         {
             CurrentStateOfGame = GameStates.Lose;
             UIManager.Inst.ShowLoseScreen();
+
+            // Perform decrypt and then encrypt in AES and send that to server which
+            // contains decrypt algorithm. RSA unfortunately requires some libraries 
+            // on cloud which are not available.
+            var gameInformation = DiContainerInitializor.Register<IGameInformation>();
+            if (gameInformation != null && gameInformation.Score > gameInformation.CurrentHighScore)
+            {
+                PlayfabManager.Inst.SubmitHighscore(Security.MagicHat(gameInformation.Score.ToString()));
+            }
+
+            // Dont waste time if there is nothing to add.
+            if (gameInformation.CoinCollected > 0)
+            {
+                PlayfabManager.Inst.AddCoins(SessionId, gameInformation.CoinCollected);
+            }
         }
     }
 }

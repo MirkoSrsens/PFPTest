@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Core;
+using Assets.Scripts.Data.Events;
 using PlayFab.ClientModels;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,22 @@ namespace Assets.Scripts.UI
 
         private string _itemId { get; set; }
 
+        private void OnEnable()
+        {
+            if(PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.OnRefreshPlayerInventory += nDestroy;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.OnRefreshPlayerInventory -= nDestroy;
+            }
+        }
+
         public void PopulateInventoryItem(ItemInstance itemInstance)
         {
             _title.text = itemInstance.DisplayName;
@@ -25,6 +42,14 @@ namespace Assets.Scripts.UI
         public void OnClick_OpenDetails()
         {
             UIManager.Inst.OpenItemDetails(_itemId);
+        }
+
+        private void nDestroy(object sender, PlayfabUserInventoryEventArgs eventArgs)
+        {
+            if(sender is PlayfabManager)
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 }

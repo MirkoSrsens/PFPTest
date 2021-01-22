@@ -25,6 +25,7 @@ namespace Assets.Scripts.Player
 
         public override void OnEnter_State()
         {
+            base.OnEnter_State();
             _rigb.gravityScale = 0;
             StartCoroutine(EndStateAfter());
         }

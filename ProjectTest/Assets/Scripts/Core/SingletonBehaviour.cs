@@ -17,7 +17,7 @@ namespace Assets.Scripts.Core
                 if(_inst == null)
                 {
                     _inst = GameObject.FindObjectOfType<T>();
-                    Debug.LogWarning(string.Format("Object of type {0} was null assigning it over FindObjectOfType \n performance might suffer", typeof(T)));
+                    //Debug.LogWarning(string.Format("Object of type {0} was null assigning it over FindObjectOfType \n performance might suffer", typeof(T)));
                 }
 
                 return _inst;

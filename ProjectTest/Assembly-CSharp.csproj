@@ -86,12 +86,16 @@
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\State.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\StateController.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\StateController\StateSoundData.cs" />
-    <Compile Include="Assets\Scripts\CustomPlugins\Utility\Mappings.cs" />
+    <Compile Include="Assets\Scripts\CustomPlugins\Utility\Const.cs" />
+    <Compile Include="Assets\Scripts\CustomPlugins\Utility\Mapper\MapModels.cs" />
+    <Compile Include="Assets\Scripts\CustomPlugins\Utility\Mapper\Mappings.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\Security.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\TrustContractManager.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\UtilityFunctions.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabCatalogItemsEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabErrorHandlingEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Data\Events\PlayfabOnApiCallEndEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Data\Events\PlayfabOnApiCallStartEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabOnUserRegisteredEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabRefreshCurrencyEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\Events\PlayfabRefreshLeaderboardsDataEventArgs.cs" />

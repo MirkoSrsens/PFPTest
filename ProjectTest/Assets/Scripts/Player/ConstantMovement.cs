@@ -1,4 +1,6 @@
-﻿using General.State;
+﻿using Assets.Scripts.Core;
+using Assets.Scripts.Data.Events;
+using General.State;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -26,6 +28,12 @@ namespace Assets.Scripts.Player
 
         public override void Update_State()
         {
+            if(controller.activeState == null)
+            {
+                controller.SwapState(this);
+            }
+
+
             // Move as long as your not dead.
             if (!(controller.activeState is Death))
             {
@@ -42,6 +50,22 @@ namespace Assets.Scripts.Player
                 {
                     _rigb.velocity = new Vector2(_speed, -_maximumUpVelocity);
                 }
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.OnRefreshUserReadonlyData -= OnStatsRecieved;
+            }
+        }
+
+        private void OnStatsRecieved(object sender, PlayfabUserReadonlyDataEventArgs eventArgs)
+        {
+            if (eventArgs.Data.ContainsKey("MovementSpeed"))
+            {
+                _speed += float.Parse(eventArgs.Data["MovementSpeed"].Value)/10;
             }
         }
     }

@@ -2,11 +2,6 @@
 using Assets.Scripts.Data.InjectionData;
 using DiContainerLibrary.DiContainer;
 using General.State;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -20,6 +15,7 @@ namespace Assets.Scripts.Player
 
         private const string Point = "Point";
         private const string Killer = "Killer";
+        private const string Coin = "Coin";
 
         private Death deathState { get; set; }
         private StateController stateController { get; set; }
@@ -38,6 +34,14 @@ namespace Assets.Scripts.Player
             {
                 gameInformation.Score += 1;
                 UIManager.Inst.UpdateInGameScore(gameInformation.Score);
+            }
+
+            if (other.gameObject.tag == Coin)
+            {
+                gameInformation.CoinCollected += 1;
+
+                //Don't destroy just disable since we are pooling this stuff.
+                other.gameObject.SetActive(false);
             }
         }
 

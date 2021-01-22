@@ -11,6 +11,10 @@ GameObject:
   - component: {fileID: 569328591771230911}
   - component: {fileID: 569328591771230905}
   - component: {fileID: 569328591771230904}
+  - component: {fileID: 9033982333352876362}
+  - component: {fileID: 5747809503269635627}
+  - component: {fileID: 4315444007545649674}
+  - component: {fileID: 28134274497502400}
   m_Layer: 0
   m_Name: design
   m_TagString: Untagged
@@ -69,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 122366471
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 8725714472616091755, guid: b18533107d45fd248b2d53bef6e3982d,
     type: 3}
@@ -102,6 +106,66 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &9033982333352876362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569328591771230910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c20924d121dccf844ad176409f391b3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FModInputSound: event:/ConstantMovement
+  State: {fileID: 569328591873862234}
+  LockFromDestroy: 1
+--- !u!114 &5747809503269635627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569328591771230910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c20924d121dccf844ad176409f391b3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FModInputSound: event:/FlapWings
+  State: {fileID: 569328591873862229}
+  LockFromDestroy: 1
+--- !u!114 &4315444007545649674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569328591771230910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c20924d121dccf844ad176409f391b3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FModInputSound: event:/PreparingSound
+  State: {fileID: 2086094370494234314}
+  LockFromDestroy: 1
+--- !u!114 &28134274497502400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569328591771230910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c20924d121dccf844ad176409f391b3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FModInputSound: event:/Dead
+  State: {fileID: 8988199582690775290}
+  LockFromDestroy: 1
 --- !u!1 &569328591873862236
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae90ade364aa46348ba22b9216f2b9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _force: 9
+  _force: 7
 --- !u!114 &2086094370494234314
 MonoBehaviour:
   m_ObjectHideFlags: 0

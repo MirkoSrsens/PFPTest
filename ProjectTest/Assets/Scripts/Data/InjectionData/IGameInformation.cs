@@ -9,5 +9,9 @@ namespace Assets.Scripts.Data.InjectionData
         Camera Camera { get; set; }
 
         int Score { get; set; }
+
+        int CurrentHighScore { get; set; }
+
+        int CoinCollected { get; set; }
     }
 }

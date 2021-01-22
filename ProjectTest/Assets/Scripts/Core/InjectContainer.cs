@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Assets.Scripts.Core
 {
+    /// <summary>
+    /// Used for injecting data into classes and game. Also allowes different implementation
+    /// depending on enviroment.
+    /// </summary>
     public class InjectContainer : MonoBehaviour
     {
         private void Awake()

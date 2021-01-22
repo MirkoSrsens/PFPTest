@@ -1,4 +1,6 @@
-﻿using General.State;
+﻿using Assets.Scripts.Core;
+using Assets.Scripts.Data.Events;
+using General.State;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -14,12 +16,19 @@ namespace Assets.Scripts.Player
         {
             base.Initialization_State();
             _rigb = GetComponent<Rigidbody2D>();
+            Priority = 10;
+
+            if(PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.OnRefreshUserReadonlyData += OnStatsRecieved;
+            }
         }
 
         public override void OnEnter_State()
         {
             designController.StartTask(GetType().Name, true);
 
+            _rigb.velocity = new Vector2(_rigb.velocity.x, 0);
             _rigb.AddForce(new Vector2(0, _force), ForceMode2D.Impulse);
             controller.EndState(this);
         }
@@ -44,6 +53,22 @@ namespace Assets.Scripts.Player
 
         public override void OnExit_State()
         {
+        }
+
+        private void OnDestroy()
+        {
+            if (PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.OnRefreshUserReadonlyData -= OnStatsRecieved;
+            }
+        }
+
+        private void OnStatsRecieved(object sender, PlayfabUserReadonlyDataEventArgs eventArgs)
+        {
+            if (eventArgs.Data.ContainsKey("WingFlapsStrenght"))
+            {
+                _force += int.Parse(eventArgs.Data["WingFlapsStrenght"].Value)/10;
+            }
         }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using Assets.Scripts.Core;
 using Assets.Scripts.Data.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,17 +17,17 @@ namespace Assets.Scripts.UI
 
         public void OnEnable()
         {
-            PlayfabManager.Inst.RefreshCatalogItems += OnCatalogDataRecieved;
+            PlayfabManager.Inst.OnRefreshCatalogItems += OnCatalogDataRecieved;
         }
 
         public void OnDisable()
         {
-            PlayfabManager.Inst.RefreshCatalogItems -= OnCatalogDataRecieved;
+            PlayfabManager.Inst.OnRefreshCatalogItems -= OnCatalogDataRecieved;
         }
 
         public void ActivateItemDetails(string itemId)
         {
-            if(string.IsNullOrEmpty(itemId))
+            if (string.IsNullOrEmpty(itemId))
             {
                 Debug.LogError("you cannot activate details if you don't have item id to display");
                 return;
@@ -44,6 +39,8 @@ namespace Assets.Scripts.UI
 
         public void OnClick_UseItem()
         {
+            PlayfabManager.Inst.UseItem(_itemId);
+            UIManager.Inst.ShowInventory();
         }
 
         public void OnCatalogDataRecieved(object sender, PlayfabCatalogItemsEventArgs eventArgs)

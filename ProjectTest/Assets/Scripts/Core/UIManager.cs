@@ -127,5 +127,9 @@ namespace Assets.Scripts.Core
 
         [SerializeField]
         private LeaderboardEntity _leaderBoardEntityPrefab;
+
+        [Header("Loading panel")]
+        [SerializeField]
+        private GameObject _loadingPanel;
     }
 }

@@ -5,7 +5,6 @@ using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 
-
 public class Security
 {
     static readonly string p = "5^@n$:Z4EnUB9fx)";

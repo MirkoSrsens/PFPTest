@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.CustomPlugins.Utility;
 using System.Collections.Generic;
 
-
 namespace Assets.Scripts.Data.Events
 {
     public class PlayfabRefreshLeaderboardsDataEventArgs

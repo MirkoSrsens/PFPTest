@@ -13,6 +13,11 @@ namespace Assets.Scripts.UI
 
         public void SetStat(string key, string value)
         {
+            if(_statButtons == null)
+            {
+                return;
+            }
+
             foreach(var button in _statButtons)
             {
                 // Can be done with numbers or some other values
