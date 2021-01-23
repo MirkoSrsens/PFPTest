@@ -5,50 +5,80 @@ using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 
+/// <summary>
+/// Contains group of security functions.
+/// </summary>
 public class Security
 {
-    static readonly string p = "5^@n$:Z4EnUB9fx)";
-    static readonly string s = "9a1f59f5e7f5fd82cd23927e456cefd1";
-    static readonly string v = "dc522bd1629ca858";
+    /// <summary>
+    /// The key used in algorithm.
+    /// </summary>
+    private const string p = "5^@n$:Z4EnUB9fx)";
 
+    /// <summary>
+    /// The salt used in algorithm. 
+    /// </summary>
+    private const string s = "9a1f59f5e7f5fd82cd23927e456cefd1";
+
+    /// <summary>
+    /// The initialization vector used in algorithm.
+    /// </summary>
+    private const string v = "dc522bd1629ca858";
+
+    /// <summary>
+    /// AES encryption.
+    /// </summary>
+    /// <param name="plainText">Text to encrypt.</param>
+    /// <returns>Returns encrypted text.</returns>
     public static string Encrypt(string plainText)
     {
         byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-
         byte[] keyBytes = new Rfc2898DeriveBytes(p, Encoding.ASCII.GetBytes(s)).GetBytes(256 / 8);
-        var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros };
-        var encryptor = symmetricKey.CreateEncryptor(keyBytes, Encoding.ASCII.GetBytes(v));
-
-        byte[] cipherTextBytes;
-
-        using (var memoryStream = new MemoryStream())
+        using (var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros })
         {
-            using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+            var encryptor = symmetricKey.CreateEncryptor(keyBytes, Encoding.ASCII.GetBytes(v));
+            byte[] cipherTextBytes;
+            using (var memoryStream = new MemoryStream())
             {
-                cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
-                cryptoStream.FlushFinalBlock();
-                cipherTextBytes = memoryStream.ToArray();
-                cryptoStream.Close();
+                using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                {
+                    cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+                    cryptoStream.FlushFinalBlock();
+                    cipherTextBytes = memoryStream.ToArray();
+                    cryptoStream.Close();
+                }
+                memoryStream.Close();
             }
-            memoryStream.Close();
+            return Convert.ToBase64String(cipherTextBytes);
         }
-        return Convert.ToBase64String(cipherTextBytes);
     }
 
+    /// <summary>
+    /// AES decryptor.
+    /// </summary>
+    /// <param name="encryptedText">Text to decrypt.</param>
+    /// <returns>Returns decrypted string.</returns>
     public static string Decrypt(string encryptedText)
     {
         byte[] cipherTextBytes = Convert.FromBase64String(encryptedText);
-        byte[] keyBytes = new Rfc2898DeriveBytes(p, Encoding.ASCII.GetBytes(s)).GetBytes(256 / 8);
-        var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.None };
-
-        var decryptor = symmetricKey.CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(v));
-        var memoryStream = new MemoryStream(cipherTextBytes);
-        var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
         byte[] plainTextBytes = new byte[cipherTextBytes.Length];
+        int decryptedByteCount = 0;
 
-        int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
-        memoryStream.Close();
-        cryptoStream.Close();
+        byte[] keyBytes = new Rfc2898DeriveBytes(p, Encoding.ASCII.GetBytes(s)).GetBytes(256 / 8);
+        using (var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.None })
+        {
+            var decryptor = symmetricKey.CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(v));
+            using (var memoryStream = new MemoryStream(cipherTextBytes))
+            {
+                using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                {
+                    decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+                    cryptoStream.Close();
+                }
+                memoryStream.Close();
+            }
+        }
+
         return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
     }
 
@@ -63,35 +93,46 @@ public class Security
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
     }
 
+    /// <summary>
+    /// Validates <see cref="RegisterData"/>.
+    /// </summary>
+    /// <param name="data">The data to validate.</param>
+    /// <param name="success">On success perform this action.</param>
+    /// <param name="failed">On failed perform this action.</param>
     public static void ValidateData(RegisterData data, Action success, Action<string> failed)
     {
         if(data.Password != data.PasswordRepeated)
         {
-            failed("Passwords needs to match");
+            failed(Const.VALIDATION_PASSWORD_MISMATCH);
             return;
         }
 
-        if(data.Password.Length < 6)
+        if(data.Password.Length <= Const.VALIDATION_PASSWORD_LENGHT)
         {
-            failed("Password needs to be at least 6 letters long");
+            failed(Const.VALIDATION_PASSWORD_SHORT);
             return;
         }
         
         if(!IsEmailValid(data.Email))
         {
-            failed("Not valid email!");
+            failed(Const.VALIDATION_INVALID_EMAIL);
             return;
         }
 
-        if(data.Username.Length < 5)
+        if(data.Username.Length < Const.VALIDATION_USERNAME_LENGHT)
         {
-            failed("Username must have more than 5 letters");
+            failed(Const.VALIDATION_USERNAME_SHORT);
             return;
         }
 
         success();
     }
 
+    /// <summary>
+    /// Checks if email is valid. Avoiding mess with using REGEX.
+    /// </summary>
+    /// <param name="emailaddress">The email address to check.</param>
+    /// <returns></returns>
     public static bool IsEmailValid(string emailaddress)
     {
         try

@@ -6,37 +6,62 @@ using UnityEngine;
 
 namespace Assets.Scripts.Enviroment
 {
+    /// <summary>
+    /// Used to spawn obstacle shards.
+    /// </summary>
     public class ObstacleSpawner : State
     {
+        /// <summary>
+        /// Gets or sets injected <see cref="GameInformation"/> data.
+        /// </summary>
         [InjectDiContainter]
         private IGameInformation gameInformation { get; set; }
 
+        /// <summary>
+        /// Defines obstacle shard prefab.
+        /// </summary>
         [SerializeField]
         private ObstacleShard _blockPrefab;
 
+        /// <summary>
+        /// Defines start block prefab.
+        /// </summary>
         [SerializeField]
         private ObstacleShard _startBlockPrefab;
 
+        /// <summary>
+        /// Defines number of start blocks.
+        /// </summary>
         [SerializeField]
         private int _numberOfStartBlocks = 7;
 
+        /// <summary>
+        /// Defines start offset from player (in backwards position).
+        /// </summary>
         [SerializeField]
         private int _startOffsetFromPlayer = 5;
 
-        private List<ObstacleShard> _activeBlocks;
+        /// <summary>
+        /// Gets or sets list of all active block shards.
+        /// </summary>
+        private List<ObstacleShard> _activeBlocks { get; set; }
 
-
+        /// <summary>
+        /// Gets or sets average position of all active blocks (used to determine when to change blocks positions;
+        /// </summary>
         private float AvaragePosition { get; set; }
 
+        /// <inheritdoc/>
         protected override void Initialization_State()
         {
             base.Initialization_State();
             _activeBlocks = new List<ObstacleShard>();
             SpawnBlocks(10);
 
-            CalculateAvarage();
+            AvaragePosition = CalculateAvarage();
         }
 
+        /// <inheritdoc/>
         public override void OnEnter_State()
         {
             base.OnEnter_State();
@@ -75,6 +100,7 @@ namespace Assets.Scripts.Enviroment
             controller.EndState(this);
         }
 
+        /// <inheritdoc/>
         public override void Update_State()
         {
             base.Update_State();
@@ -85,6 +111,10 @@ namespace Assets.Scripts.Enviroment
             }
         }
 
+        /// <summary>
+        /// Spawns specific number of blocks.
+        /// </summary>
+        /// <param name="numberOfBlocks">Number of blocks to be spawned.</param>
         private void SpawnBlocks(int numberOfBlocks)
         {
             var lastInLine = default(ObstacleShard);
@@ -116,17 +146,24 @@ namespace Assets.Scripts.Enviroment
             }
         }
 
-        private void CalculateAvarage()
+        /// <summary>
+        /// Calculates average position on x axis.
+        /// </summary>
+        private float CalculateAvarage()
         {
-            AvaragePosition = 0;
+            var result = 0f;
             foreach (var block in _activeBlocks)
             {
-                AvaragePosition += block.transform.position.x;
+                result += block.transform.position.x;
             }
 
-            AvaragePosition /= _activeBlocks.Count;
+            return result/_activeBlocks.Count;
         }
 
+        /// <summary>
+        /// Gets the block with furthest position.
+        /// </summary>
+        /// <returns>Returns furthes obstacle shard.</returns>
         private ObstacleShard GetFurthestPosition()
         {
             var result = default(ObstacleShard);
@@ -141,10 +178,11 @@ namespace Assets.Scripts.Enviroment
             return result;
         }
 
+        /// <inheritdoc/>
         public override void OnExit_State()
         {
             base.OnExit_State();
-            CalculateAvarage();
+            AvaragePosition = CalculateAvarage();
         }
 
     }

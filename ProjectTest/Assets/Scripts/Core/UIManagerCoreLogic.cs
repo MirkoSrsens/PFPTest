@@ -8,6 +8,11 @@ namespace Assets.Scripts.Core
 {
     public partial class UIManager : SingletonBehaviour<UIManager>
     {
+        #region Routines
+        /// <summary>
+        /// Plays intro sequence iterating over provided <see cref="IntroSequence"/> scriptable object.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator PlayIntroSequence()
         {
             CloseAllExcept(_introPanel);
@@ -30,7 +35,9 @@ namespace Assets.Scripts.Core
 
             _introPanel.SetActive(false);
         }
+        #endregion
 
+        #region Show/Hide UI elements
         /// Maybe in the future other logic will go in <see cref="ShowLoginScreen"/> and <see cref="CloseLoginScreen"/>.
         public void ShowLoginScreen()
         {
@@ -150,27 +157,16 @@ namespace Assets.Scripts.Core
                 }
             }
         }
+        #endregion
 
-        public void OnPlayfabLoginClicked()
+        #region OnClick_Events
+        public void OnClick_PlayfabLogin()
         {
             PlayfabManager.Inst.PerformLogin(_username.text, _password.text,
                 success =>
                 {
                     GameManager.Inst.StartMainMenuState();
                 }, null);
-        }
-
-        public void DisplayChoseValueOption(CatalogItem catalogItem)
-        {
-            // We dont want to close shop panel in background just for aesthetics reasons :D.
-            _choseCurrencyPanel.gameObject.SetActive(true);
-            _choseCurrencyPanel.SpawnCurrencyOptions(catalogItem);
-        }
-
-        public void OpenItemDetails(string itemId)
-        {
-            _inventoryItemDetails.ActivateItemDetails(itemId);
-            PlayfabManager.Inst.GetCatalogItems();
         }
 
         public void OnClick_StartGame()
@@ -181,16 +177,6 @@ namespace Assets.Scripts.Core
                     CloseAllExcept(null);
                     GameManager.Inst.OnStartGame(id);
                 });
-        }
-
-        public void GoToMainMenu()
-        {
-            GameManager.Inst.StartMainMenuState();
-        }
-
-        public void UpdateInGameScore(int number)
-        {
-            _inGameHighscore.text = number.ToString();
         }
 
         public void OnClick_RegisterUser()
@@ -212,5 +198,33 @@ namespace Assets.Scripts.Core
         {
             PlayfabManager.Inst.SignOut();
         }
+        #endregion
+
+        #region Callbacks from other scripts 
+        public void DisplayChoseValueOption(CatalogItem catalogItem)
+        {
+            CloseAllExcept(null, new GameObject[] { _choseCurrencyPanel.gameObject, _shopPanel });
+            _choseCurrencyPanel.SpawnCurrencyOptions(catalogItem);
+        }
+
+        public void OpenItemDetails(string itemId)
+        {
+            _inventoryItemDetails.ActivateItemDetails(itemId);
+            PlayfabManager.Inst.GetCatalogItems();
+        }
+
+        /// <summary>
+        /// Swaps states to main menu. Used when we want to go back to main menu from playing state.
+        /// </summary>
+        public void GoToMainMenu()
+        {
+            GameManager.Inst.StartMainMenuState();
+        }
+
+        public void UpdateInGameScore(int number)
+        {
+            _inGameHighscore.text = number.ToString();
+        }
+        #endregion
     }
 }

@@ -15,6 +15,11 @@ namespace General.State
             Anima = GetComponentInChildren<Animator>();
         }
 
+        /// <summary>
+        /// Starts animation sequence
+        /// </summary>
+        /// <param name="animationName">The name of animation.</param>
+        /// <param name="useTrigger">Value indicating weather trigger should be used or flag.</param>
         public void StartAnimation(string animationName, bool useTrigger = false)
         {
             if (Anima == null) return;
@@ -29,6 +34,10 @@ namespace General.State
             }
         }
 
+        /// <summary>
+        /// Stops animation with name. Only uses with bool animations.
+        /// </summary>
+        /// <param name="animationName">Name of animation.</param>
         public void StopAnimation(string animationName)
         {
             if (Anima == null) return;
@@ -38,7 +47,7 @@ namespace General.State
         /// <summary>
         /// If on turns off if off turns on.
         /// </summary>
-        /// <param name="stateAnimationName"></param>
+        /// <param name="stateAnimationName">Name of animation</param>
         public void SetStateAnimation(string stateAnimationName)
         {
             if (Anima == null) return;
@@ -49,6 +58,12 @@ namespace General.State
             }
         }
 
+        /// <summary>
+        /// Checks if animation is over specific % of executing. If animation event is not an option.
+        /// </summary>
+        /// <param name="state">State for which we are expecting animation.</param>
+        /// <param name="offset">Offset for which we are expecting animation.</param>
+        /// <returns>Value indicating weather animation is over specific % or not.</returns>
         public bool IsAnimationOver(State state, float offset = 1)
         {
             if (Anima == null) return true;
@@ -61,6 +76,12 @@ namespace General.State
             return false;
         }
 
+        /// <summary>
+        /// Checks if animation is over specific % of executing. If animation event is not an option.
+        /// </summary>
+        /// <param name="animationName">name of animation for which we are expecting animation.</param>
+        /// <param name="offset">Offset for which we are expecting animation.</param>
+        /// <returns>Value indicating weather animation is over specific % or not.</returns>
         public bool IsAnimationOver(string animationName, float offset = 1)
         {
             if (Anima == null) return true;

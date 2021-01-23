@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\Const.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\Mapper\MapModels.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\Mapper\Mappings.cs" />
+    <Compile Include="Assets\Scripts\CustomPlugins\Utility\Pool.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\Security.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\TrustContractManager.cs" />
     <Compile Include="Assets\Scripts\CustomPlugins\Utility\UtilityFunctions.cs" />
@@ -107,7 +108,6 @@
     <Compile Include="Assets\Scripts\Data\Scriptable\IntroSequence.cs" />
     <Compile Include="Assets\Scripts\Enviroment\ObstacleShard.cs" />
     <Compile Include="Assets\Scripts\Enviroment\ObstacleSpawner.cs" />
-    <Compile Include="Assets\Scripts\Enviroment\ParalaxFollow.cs" />
     <Compile Include="Assets\Scripts\Player\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\Player\ConstantMovement.cs" />
     <Compile Include="Assets\Scripts\Player\Death.cs" />

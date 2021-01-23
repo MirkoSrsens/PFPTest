@@ -2,27 +2,35 @@
 using Assets.Scripts.Data.InjectionData;
 using DiContainerLibrary.DiContainer;
 using General.State;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
     public class Death : State
     {
+        /// <summary>
+        /// Gets or sets injection of <see cref="IGameInformation"/> object instance.
+        /// </summary>
         [InjectDiContainter]
         private IGameInformation gameInformation { get; set; }
 
+        /// <summary>
+        /// Gets or sets rigidbody component.
+        /// </summary>
         private Rigidbody2D _rigb { get; set; }
 
+        /// <summary>
+        /// Gets or sets collider component of object.
+        /// </summary>
         private BoxCollider2D _collider { get; set; }
 
+        /// <summary>
+        /// Gets or sets camera follow state from <see cref="GameInformation.Camera"> object.
+        /// </summary>
         private CameraFollow cameraFollowState { get; set; }
 
+        /// <inheritdoc/>
         protected override void Initialization_State()
         {
             base.Initialization_State();
@@ -32,21 +40,27 @@ namespace Assets.Scripts.Player
             cameraFollowState = gameInformation.Camera.GetComponent<CameraFollow>();
         }
 
+        /// <inheritdoc/>
         public override void OnEnter_State()
         {
             base.OnEnter_State();
             StartCoroutine(StopMovingAfter());
         }
 
+        /// <summary>
+        /// Coroutine to make death sequence more entertaining.
+        /// </summary>
+        /// <returns>Returns yields for enumeration.</returns>
         private IEnumerator StopMovingAfter()
         {
             _collider.enabled = false;
             _rigb.AddForce(new Vector2(0, 20));
             _rigb.gravityScale = 10;
             cameraFollowState.controller.EndState(cameraFollowState);
-            yield return new WaitForSeconds(2);
-            _rigb.constraints = RigidbodyConstraints2D.FreezeAll;
+            yield return new WaitForSeconds(1f);
             GameManager.Inst.OnGameLose();
+            yield return new WaitForSeconds(2f);
+            _rigb.constraints = RigidbodyConstraints2D.FreezeAll;
         }
     }
 }

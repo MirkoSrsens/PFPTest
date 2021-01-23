@@ -5,27 +5,47 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
+    /// <summary>
+    /// Defines state for player that performs constant movement on X axis.
+    /// </summary>
     public class ConstantMovement : State
     {
-        private Rigidbody2D _rigb { get; set; }
-
-        private int _direction { get; set; }
-
+        /// <summary>
+        /// Defines movement speed on x axis.
+        /// </summary>
         [SerializeField]
         private float _speed;
 
+        /// <summary>
+        /// Defines maximum downwards gravity velocity.
+        /// </summary>
         [SerializeField]
         private float _maximumDownVelocity;
 
+        /// <summary>
+        /// Defines maximum upwards velocity.
+        /// </summary>
         [SerializeField]
         private float _maximumUpVelocity;
 
+        /// <summary>
+        /// Gets or sets rigidbody component.
+        /// </summary>
+        private Rigidbody2D _rigb { get; set; }
+
+        /// <summary>
+        /// Gets or sets direction component.
+        /// </summary>
+        private int _direction { get; set; }
+
+        /// <inheritdoc/>
         protected override void Initialization_State()
         {
             base.Initialization_State();
             _rigb = GetComponent<Rigidbody2D>();
         }
 
+        /// <inheritdoc/>
         public override void Update_State()
         {
             if(controller.activeState == null)
@@ -63,9 +83,9 @@ namespace Assets.Scripts.Player
 
         private void OnStatsRecieved(object sender, PlayfabUserReadonlyDataEventArgs eventArgs)
         {
-            if (eventArgs.Data.ContainsKey("MovementSpeed"))
+            if (eventArgs.Data.ContainsKey(Const.STAT_MOVEMENT_SPEED))
             {
-                _speed += float.Parse(eventArgs.Data["MovementSpeed"].Value)/10;
+                _speed += float.Parse(eventArgs.Data[Const.STAT_MOVEMENT_SPEED].Value)/10;
             }
         }
     }

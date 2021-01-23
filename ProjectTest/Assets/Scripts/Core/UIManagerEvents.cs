@@ -1,5 +1,9 @@
-﻿using Assets.Scripts.Data.Events;
+﻿using Assets.Scripts.CustomPlugins.Utility;
+using Assets.Scripts.Data.Events;
+using Assets.Scripts.UI;
+using System.Collections.Generic;
 using System.Text;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Core
 {
@@ -11,7 +15,7 @@ namespace Assets.Scripts.Core
             {
                 PlayfabManager.Inst.OnRefreshCurrencyDataEvent += OnCurrencyDataRefresh;
                 PlayfabManager.Inst.OnRefreshUserDetailsData += OnUserInfoAcquired;
-                PlayfabManager.Inst.OnRefreshCatalogItems += OnCatalogItemRecieved;
+                PlayfabManager.Inst.OnRefreshCatalogItems += OnCatalogDataRecieved;
                 PlayfabManager.Inst.OnRefreshPlayerInventory += OnInventoryItemsRecieved;
                 PlayfabManager.Inst.OnRefreshUserReadonlyData += OnStatsRecieved;
                 PlayfabManager.Inst.OnErrorEvent += DisplayErrorPopUp;
@@ -28,7 +32,7 @@ namespace Assets.Scripts.Core
             {
                 PlayfabManager.Inst.OnRefreshCurrencyDataEvent -= OnCurrencyDataRefresh;
                 PlayfabManager.Inst.OnRefreshUserDetailsData -= OnUserInfoAcquired;
-                PlayfabManager.Inst.OnRefreshCatalogItems -= OnCatalogItemRecieved;
+                PlayfabManager.Inst.OnRefreshCatalogItems -= OnCatalogDataRecieved;
                 PlayfabManager.Inst.OnRefreshPlayerInventory -= OnInventoryItemsRecieved;
                 PlayfabManager.Inst.OnErrorEvent -= DisplayErrorPopUp;
                 PlayfabManager.Inst.OnLeaderboardRefresh -= OnLeaderboardDataRecieved;
@@ -38,6 +42,11 @@ namespace Assets.Scripts.Core
             }
         }
 
+        /// <summary>
+        /// On user info acquired setup display name.
+        /// </summary>
+        /// <param name="sender">The sender usually <see cref="PlayfabManager"/>.</param>
+        /// <param name="eventArgs">Event data.</param>
         private void OnUserInfoAcquired(object sender, PlayfabUserInfoEventArgs eventArgs)
         {
             _usernameDisplay.text = eventArgs.Username;
@@ -50,33 +59,25 @@ namespace Assets.Scripts.Core
         /// </summary>
         /// <param name="sender">Playfab manager usually but can be subscribed somewhere else in the future</param>
         /// <param name="eventArgs">Data about items.</param>
-        private void OnCatalogItemRecieved(object sender, PlayfabCatalogItemsEventArgs eventArgs)
+        private void OnCatalogDataRecieved(object sender, PlayfabCatalogItemsEventArgs eventArgs)
         {
-            // Cleanup of old items in shop planner section.
-            for (int i = _catalogItemPanel.transform.childCount - 1; i >= 0; i--)
+            foreach(var item in _catalogItemPanel.GetComponentsInChildren<Button>())
             {
-                Destroy(_catalogItemPanel.transform.GetChild(i).gameObject);
+                Pool.Inst.Despawn(item);
             }
 
             foreach (var item in eventArgs.CatalogItems)
             {
-                var catalogItem = Instantiate(_catalogItemPrefab, _catalogItemPanel.transform);
-                catalogItem.Name.text = item.DisplayName;
-                catalogItem.Description.text = item.Description;
+                var catalogItem = Pool.Inst.Spawn<CatalogItem>(_catalogItemPrefab, _catalogItemPanel.transform);
+                var currencyOption = new List<string>(item.VirtualCurrencyPrices.Keys);
 
-                StringBuilder sb = new StringBuilder();
-                foreach (var currency in item.VirtualCurrencyPrices)
-                {
-                    sb.Append(string.Concat(currency.Key, ":", currency.Value, "/"));
-                    catalogItem.currencyOptions.Add(currency.Key);
-                }
-                catalogItem.ItemID = item.ItemId;
-                catalogItem.Price.text = sb.ToString();
+                catalogItem.Setup(item.ItemId, item.DisplayName, item.Description,
+                    item.VirtualCurrencyPrices.ToString(Const.DISPLAY_CURRENCY_FORMAT), currencyOption);
             }
         }
 
         /// <summary>
-        /// When we receive items we want to display them on screen
+        /// On receive items we want to display them on screen
         /// </summary>
         /// <param name="sender">The object that triggered event.</param>
         /// <param name="eventArgs">Parameters about inventory.</param>
@@ -84,11 +85,15 @@ namespace Assets.Scripts.Core
         {
             foreach (var item in eventArgs.ItemInstances)
             {
-                var inventoryItem = Instantiate(_inventoryItemPrefab, _inventoryItemListPanel.transform);
-                inventoryItem.PopulateInventoryItem(item);
+                Pool.Inst.Spawn(_inventoryItemPrefab, _inventoryItemListPanel.transform).PopulateInventoryItem(item);
             }
         }
 
+        /// <summary>
+        /// On stats received setup them with stats UI elements.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         public void OnStatsRecieved(object sender, PlayfabUserReadonlyDataEventArgs eventArgs)
         {
             foreach (var item in eventArgs.Data)
@@ -97,37 +102,55 @@ namespace Assets.Scripts.Core
             }
         }
 
+        /// <summary>
+        /// On leaderboard received start populating it on UI.
+        /// </summary>
+        /// <param name="sender">Usually <see cref="PlayfabManager"/>, but can be some other object.</param>
+        /// <param name="eventArgs">Data about leaderboards.</param>
         public void OnLeaderboardDataRecieved(object sender, PlayfabRefreshLeaderboardsDataEventArgs eventArgs)
         {
-            const int minimumNumberOfPlaces = 10;
-            var current = 0;
-
-            foreach (var item in eventArgs.Data)
+            for (int i = 0; i < Const.HIGHSCORE_RANGE_COUNT; i++)
             {
-                var entity = Instantiate(_leaderBoardEntityPrefab, _leaderboardListPanel.transform);
-                entity.Setup(item);
-                current++;
-            }
-
-            for (int i = current; i < minimumNumberOfPlaces; i++)
-            {
-                var entity = Instantiate(_leaderBoardEntityPrefab, _leaderboardListPanel.transform);
-                entity.Setup(new CustomPlugins.Utility.LeaderboardData("-", 0, i));
+                if (i < eventArgs.Data.Count)
+                {
+                    Pool.Inst.Spawn(_leaderBoardEntityPrefab, _leaderboardListPanel.transform).Setup(eventArgs.Data[i]);
+                }
+                else
+                {
+                    var entity = Instantiate(_leaderBoardEntityPrefab, _leaderboardListPanel.transform);
+                    entity.Setup(new LeaderboardData(Const.DEFAULT_LEADERBOARD_NAME, Const.DEFAULT_LEADERBOARD_SCORE, i));
+                }
             }
         }
 
+        /// <summary>
+        /// Displays error on UI. Used when something with playfab goes wrong.
+        /// </summary>
+        /// <param name="sender">Usually <see cref="PlayfabManager"/>, but can be some other object.</param>
+        /// <param name="eventArgs">Data about error message.</param>
         private void DisplayErrorPopUp(object sender, PlayfabErrorHandlingEventArgs eventArgs)
         {
-            var split = eventArgs.Message.Split('\n');
+            var split = eventArgs.Message.Split(Const.NEW_LINE);
+            // First line is the error cloud script returned, other lines are downhill stack trace.
             _infoPanel.Setup(split[0]);
         }
 
+        /// <summary>
+        /// On user registered successfully. 
+        /// </summary>
+        /// <param name="sender">Usually <see cref="PlayfabManager"/>, but can be some other object.</param>
+        /// <param name="eventArgs">Empty data but can contain something else in the future eg. username</param>
         private void OnUserRegistered(object sender, PlayfabOnUserRegisteredEventArgs eventArgs)
         {
             ShowLoginScreen();
-            _infoPanel.Setup("New user registered, please login!");
+            _infoPanel.Setup(Const.ON_REGISTRATION_SUCCESS);
         }
 
+        /// <summary>
+        /// On currency data refresh update main menu UI elements.
+        /// </summary>
+        /// <param name="sender">Usually <see cref="PlayfabManager"/>, but can be some other object.</param>
+        /// <param name="eventArgs">Data about currency status and amounts.</param>
         private void OnCurrencyDataRefresh(object sender, PlayfabRefreshCurrencyEventArgs eventArgs)
         {
             _goldCount.text = eventArgs.Gold.ToString();

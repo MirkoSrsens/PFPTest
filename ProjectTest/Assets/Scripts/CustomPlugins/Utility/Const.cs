@@ -9,6 +9,31 @@
     public const string STATISTIC_NAME = "Highscore";
     public const int HIGHSCORE_START_INDEX = 0;
     public const int HIGHSCORE_RANGE_COUNT = 10;
+    public const string DEFAULT_LEADERBOARD_NAME = "-";
+    public const int DEFAULT_LEADERBOARD_SCORE = 0;
+    public const string FLAPPY_BIRD_SCENE = "FlappyBird";
+    public const string DISPLAY_CURRENCY_FORMAT = "{0}: {1} /";
+    public const char NEW_LINE = '\n';
+    public const string ON_REGISTRATION_SUCCESS = "New user registered, please login!";
+    public const int VALIDATION_PASSWORD_LENGHT = 6;
+    public const int VALIDATION_USERNAME_LENGHT = 5;
+    public const string VALIDATION_PASSWORD_MISMATCH = "Passwords needs to match";
+    public static readonly string VALIDATION_PASSWORD_SHORT = string.Format( "Password needs to be at least {0} letters long", VALIDATION_PASSWORD_LENGHT);
+    public const string VALIDATION_INVALID_EMAIL = "Not valid email!";
+    public static readonly string VALIDATION_USERNAME_SHORT = string.Format("Username must have more than {0} letters", VALIDATION_USERNAME_LENGHT);
+    public const string STAT_MOVEMENT_SPEED = "MovementSpeed";
+    public const string STAT_WING_FLAPS_STRENGHT = "WingFlapsStrenght";
+    public const string SUFIX_CLONE = "(Clone)";
+
+    // TAGS
+    public const string TAG_POINT = "Point";
+    public const string TAG_KILLER = "Killer";
+    public const string TAG_COIN = "Coin";
+
+    // VALUE MODIFIERS
+    public const int POINT_WORTH = 1;
+    public const int COIN_WORTH = 1;
+
 
 
     // Constants functions

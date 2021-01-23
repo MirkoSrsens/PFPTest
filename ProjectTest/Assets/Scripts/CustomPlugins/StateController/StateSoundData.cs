@@ -1,7 +1,9 @@
-﻿using FMOD.Studio;
-using General.State;
+﻿using General.State;
 using UnityEngine;
 
+/// <summary>
+/// Contains sound data for specific states.
+/// </summary>
 public class StateSoundData : MonoBehaviour
 {
     /// <summary>

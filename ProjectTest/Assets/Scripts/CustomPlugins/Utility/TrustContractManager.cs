@@ -7,16 +7,22 @@ using System.Collections;
 /// </summary>
 public class TrustContractManager : SingletonBehaviour<TrustContractManager>
 {
-    public void Sign<Suc,Err>(Action<Action<Suc>, Action<Err>> method, Action<Suc> onSuccess, Action<Err> onFailed)
-    {
-        method(onSuccess, onFailed);
-    }
-
+    /// <summary>
+    /// Sign the routine to fire <param name="onCompleted"> after it is done.</param>
+    /// </summary>
+    /// <param name="routine">The routine to execute.</param>
+    /// <param name="onCompleted">The on completed action.</param>
     public void Sign(IEnumerator routine, Action onCompleted)
     {
         StartCoroutine(Run(routine, onCompleted));
     }
 
+    /// <summary>
+    /// Runs routine with action firing on execution.
+    /// </summary>
+    /// <param name="routine">The routine to execute.</param>
+    /// <param name="onCompleted">The on completed action.</param>
+    /// <returns>Returns yields.</returns>
     private IEnumerator Run(IEnumerator routine, Action onCompleted)
     {
         yield return routine;

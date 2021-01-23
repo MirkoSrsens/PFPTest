@@ -29,6 +29,9 @@ namespace General.State
             controller = GetComponent<StateController>();
         }
 
+        /// <summary>
+        /// Used for initializing one time components and values.
+        /// </summary>
         protected virtual void Initialization_State()
         {
             DiContainerLibrary.DiContainer.DiContainerInitializor.RegisterObject(this);

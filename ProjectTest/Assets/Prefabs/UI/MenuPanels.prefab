@@ -1494,9 +1494,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3de214a7bac83154d816831484d1faa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buttonPrefab: {fileID: 5777625833887821229, guid: c3a80b2035f4cd24d8a59ca47f5f77da,
+  _currencyButtonPrefab: {fileID: 5777625833887821229, guid: c3a80b2035f4cd24d8a59ca47f5f77da,
     type: 3}
-  _buttonsPanel: {fileID: 5507573765189279568}
+  _parentPanelOfCurrencyButtons: {fileID: 5507573765189279568}
 --- !u!114 &6973447332696850273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2530,7 +2530,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4596233259004879264}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7746744507445095799}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &644147099932332683
 GameObject:
   m_ObjectHideFlags: 0
@@ -8237,7 +8248,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6281818027828315307}
-        m_MethodName: OnPlayfabLoginClicked
+        m_MethodName: OnClick_PlayfabLogin
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8610,7 +8621,6 @@ MonoBehaviour:
   _upgradePanel: {fileID: 6229262466581503963}
   _infoPanel: {fileID: 9143115242475405152}
   _losePanel: {fileID: 5993273585416339542}
-  _submirButton: {fileID: 0}
   _loseHighscoreText: {fileID: 190548246134654987}
   _inGamePanel: {fileID: 305961817656759874}
   _inGameHighscore: {fileID: 8260503006808090854}

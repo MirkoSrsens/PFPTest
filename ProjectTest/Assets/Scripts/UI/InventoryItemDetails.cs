@@ -5,14 +5,26 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.UI
 {
+    /// <summary>
+    /// Defines inventory item details used to display additional info once item is clicked.
+    /// </summary>
     public class InventoryItemDetails : MonoBehaviour
     {
+        /// <summary>
+        /// Defines title that contains name of the item.
+        /// </summary>
         [SerializeField]
         private Text _title;
 
+        /// <summary>
+        /// Defines description of the item
+        /// </summary>
         [SerializeField]
         private Text _description;
 
+        /// <summary>
+        /// Gets or sets item identifier.
+        /// </summary>
         private string _itemId { get; set; }
 
         public void OnEnable()
@@ -25,6 +37,10 @@ namespace Assets.Scripts.UI
             PlayfabManager.Inst.OnRefreshCatalogItems -= OnCatalogDataRecieved;
         }
 
+        /// <summary>
+        /// Calls activation of the item.
+        /// </summary>
+        /// <param name="itemId">The item unique identifier.</param>
         public void ActivateItemDetails(string itemId)
         {
             if (string.IsNullOrEmpty(itemId))
@@ -37,12 +53,20 @@ namespace Assets.Scripts.UI
             gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// On click perform usage of item 
+        /// </summary>
         public void OnClick_UseItem()
         {
             PlayfabManager.Inst.UseItem(_itemId);
             UIManager.Inst.ShowInventory();
         }
 
+        /// <summary>
+        /// On catalog data received populate inventory details.
+        /// </summary>
+        /// <param name="sender">The sender. Usually <see cref="InventoryItemDetails"/>.</param>
+        /// <param name="eventArgs">The event arguments.</param>
         public void OnCatalogDataRecieved(object sender, PlayfabCatalogItemsEventArgs eventArgs)
         {
             foreach(var item in eventArgs.CatalogItems)

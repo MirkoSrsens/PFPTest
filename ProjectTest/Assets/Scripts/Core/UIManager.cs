@@ -54,14 +54,15 @@ namespace Assets.Scripts.Core
         private Text _usernameDisplay;
 
         [SerializeField]
-        // Soft currency
+        // Soft currency.
         private Text _goldCount;
 
         [SerializeField]
+        // Time currency.
         private Text _energyCount;
 
         [SerializeField]
-        // Hard currency
+        // Hard currency.
         private Text _diamondCount;
 
         [Header("Shop elements")]
@@ -104,9 +105,6 @@ namespace Assets.Scripts.Core
         [Header("Lose panel elements")]
         [SerializeField]
         private GameObject _losePanel;
-
-        [SerializeField]
-        private Button _submirButton;
 
         [SerializeField]
         private Text _loseHighscoreText;

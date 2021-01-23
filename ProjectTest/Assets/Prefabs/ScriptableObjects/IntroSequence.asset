@@ -13,15 +13,11 @@ MonoBehaviour:
   m_Name: IntroSequence
   m_EditorClassIdentifier: 
   SequenceOfObjects:
-  - SplashImage: {fileID: 8512324927490354425, guid: db25ad38164e03941b93461dbd167e80,
-      type: 3}
-    Duration: 2
-    FModInputSound: 
-  - SplashImage: {fileID: 3596495252561708275, guid: bcc1b8f69c522df4d817ca0625cc954e,
-      type: 3}
-    Duration: 2
-    FModInputSound: 
   - SplashImage: {fileID: 7051837810861897643, guid: d6e60912861d82049b8611cf6106fa06,
+      type: 3}
+    Duration: 2
+    FModInputSound: 
+  - SplashImage: {fileID: 5659466946390929918, guid: 5777a6ab2430b514eb7db1ceb352aa50,
       type: 3}
     Duration: 2
     FModInputSound: 

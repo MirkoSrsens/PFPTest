@@ -5,8 +5,8 @@ using UnityEngine;
 namespace Assets.Scripts.Core
 {
     /// <summary>
-    /// Used for injecting data into classes and game. Also allowes different implementation
-    /// depending on enviroment.
+    /// Used for injecting data into classes and game. Also allows different implementation
+    /// depending on environment.
     /// </summary>
     public class InjectContainer : MonoBehaviour
     {

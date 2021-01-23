@@ -20,6 +20,11 @@ namespace General.State
             animationController = GetComponent<AnimationController>();
         }
 
+        /// <summary>
+        /// Starts visual and audio effects of state.
+        /// </summary>
+        /// <param name="stateName">Name of state.</param>
+        /// <param name="useTrigger">Should trigger be used or not.</param>
         public void StartTask(string stateName, bool useTrigger = false)
         {
             if (stateName == null) return;
@@ -35,6 +40,10 @@ namespace General.State
             }
         }
 
+        /// <summary>
+        /// Stops visual and audio effects of state.
+        /// </summary>
+        /// <param name="stateName">Name of state.</param>
         public void StopTask(string stateName)
         {
             if (stateName == null) return;

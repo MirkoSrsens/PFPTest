@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Data.Scriptable
 {
+    /// <summary>
+    /// Contains intro shard data (shard meaning 1 peace). 
+    /// </summary>
     [Serializable]
     public struct IntroShardData
     {
@@ -21,6 +24,9 @@ namespace Assets.Scripts.Data.Scriptable
         public string FModInputSound;
     }
 
+    /// <summary>
+    /// Defines scriptable object used for defining sequence of logos displayed on intro.
+    /// </summary>
     [CreateAssetMenu(fileName = "IntroSequence", menuName = "ScriptableObjects/CreateNewIntroSequence", order = 1)]
     public class IntroSequence : ScriptableObject
     {

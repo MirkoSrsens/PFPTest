@@ -1,20 +1,25 @@
 ﻿using General.State;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
+    /// <summary>
+    /// Defines state used to allow player few seconds of brake on game start.
+    /// </summary>
     public class PreparingPlayerState : State
     {
+        /// <summary>
+        /// Gets or sets rigidbody component.
+        /// </summary>
         private Rigidbody2D _rigb { get; set; }
 
+        /// <summary>
+        /// Gets or sets gravity scale value.
+        /// </summary>
         private float _gravityScale { get; set; }
 
+        /// <inheritdoc/>
         protected override void Initialization_State()
         {
             base.Initialization_State();
@@ -23,6 +28,7 @@ namespace Assets.Scripts.Player
             controller.SwapState(this);
         }
 
+        /// <inheritdoc/>
         public override void OnEnter_State()
         {
             base.OnEnter_State();
@@ -30,6 +36,7 @@ namespace Assets.Scripts.Player
             StartCoroutine(EndStateAfter());
         }
 
+        /// <inheritdoc/>
         public override void WhileActive_State()
         {
             base.WhileActive_State();
@@ -40,12 +47,14 @@ namespace Assets.Scripts.Player
             }
         }
 
+        /// <inheritdoc/>
         private IEnumerator EndStateAfter()
         {
             yield return new WaitForSeconds(2);
             controller.EndState(this);
         }
 
+        /// <inheritdoc/>
         public override void OnExit_State()
         {
             base.OnExit_State();

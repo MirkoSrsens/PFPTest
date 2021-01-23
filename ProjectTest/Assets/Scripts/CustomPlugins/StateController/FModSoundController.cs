@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace General.State
 {
+    /// <summary>
+    /// Used for controlling FMOD sound controller.
+    /// </summary>
     public class FModSoundController : MonoBehaviour
     {
         /// <summary>

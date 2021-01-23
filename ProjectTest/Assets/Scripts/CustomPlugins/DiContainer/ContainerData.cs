@@ -2,6 +2,9 @@
 
 namespace DiContainerLibrary.DiContainer
 {
+    /// <summary>
+    /// Holds injection data.
+    /// </summary>
     public class ContainerData
     {
         /// <summary>

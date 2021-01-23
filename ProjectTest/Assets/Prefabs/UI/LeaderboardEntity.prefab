@@ -194,9 +194,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e564c1057647864dbd95e44aed9ea6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placement: {fileID: 6094286706815829988}
-  name: {fileID: 5400566173833243074}
-  points: {fileID: 9051418964390033253}
+  _placement: {fileID: 6094286706815829988}
+  _name: {fileID: 5400566173833243074}
+  _points: {fileID: 9051418964390033253}
 --- !u!1 &4237159800067589463
 GameObject:
   m_ObjectHideFlags: 0

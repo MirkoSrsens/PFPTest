@@ -11,13 +11,19 @@ namespace Assets.Scripts.Player
     /// </summary>
     public class PlayerTriggers : MonoBehaviour
     {
+        /// <summary>
+        /// Gets or sets injection of <see cref="IGameInformation"/> object instance.
+        /// </summary>
         private IGameInformation gameInformation { get; set; }
 
-        private const string Point = "Point";
-        private const string Killer = "Killer";
-        private const string Coin = "Coin";
-
+        /// <summary>
+        /// Gets or sets <see cref="Death"/> state reference.
+        /// </summary>
         private Death deathState { get; set; }
+
+        /// <summary>
+        /// Gets or sets <see cref="StateController"/> object reference.
+        /// </summary>
         private StateController stateController { get; set; }
 
         private void Start()
@@ -28,17 +34,17 @@ namespace Assets.Scripts.Player
             stateController = GetComponent<StateController>();
         }
 
-        private void OnTriggerEnter2D(UnityEngine.Collider2D other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.tag == Point)
+            if (other.gameObject.tag == Const.TAG_POINT)
             {
-                gameInformation.Score += 1;
+                gameInformation.Score += Const.POINT_WORTH;
                 UIManager.Inst.UpdateInGameScore(gameInformation.Score);
             }
 
-            if (other.gameObject.tag == Coin)
+            if (other.gameObject.tag == Const.TAG_COIN)
             {
-                gameInformation.CoinCollected += 1;
+                gameInformation.CoinCollected += Const.COIN_WORTH;
 
                 //Don't destroy just disable since we are pooling this stuff.
                 other.gameObject.SetActive(false);
@@ -47,7 +53,7 @@ namespace Assets.Scripts.Player
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.tag == Killer)
+            if (collision.gameObject.tag == Const.TAG_KILLER)
             {
                 stateController.SwapState(deathState);
             }

@@ -1,24 +1,24 @@
 ﻿using Assets.Scripts.Data.InjectionData;
 using DiContainerLibrary.DiContainer;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public enum GameStates
 {
-    Intro,
-    Login,
-    MainMenu,
-    Playing,
-    Lose,
+    Intro, // Intro splash screen sequence
+    Login, // Waiting for user to login
+    MainMenu, // Main menu
+    Playing, // Playing the game
+    Lose, // On lose game.
 }
 
 namespace Assets.Scripts.Core
 {
     public class GameManager : SingletonBehaviour<GameManager>
     {
+        /// <summary>
+        /// This field holds reference to main menu camera which will be turned on/off between <see cref="GameStates.MainMenu"/> and <see cref="GameStates.Playing"/>
+        /// </summary>
         [SerializeField]
         private GameObject mainMenuCamera;
 
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Core
         private string _sessionId;
 
         /// <summary>
-        /// Encryptor for session Id.
+        /// Encrypt for session Id.
         /// </summary>
         private string SessionId { get { return Security.Decrypt(_sessionId); } set { _sessionId = Security.Encrypt(value.ToString()); } }
 
@@ -46,17 +46,21 @@ namespace Assets.Scripts.Core
             SceneManager.sceneLoaded += new UnityEngine.Events.UnityAction<Scene, LoadSceneMode>((a,b) => PlayfabManager.Inst.GetUserReadonlyData());
             
             // Dont want to use this in editor, takes time.
-#if !UNITY_EDITOR && ASDESDEAFAFA
+#if !UNITY_EDITOR
            //TrustContractManager.Inst.Sign(UIManager.Inst.PlayIntroSequence(), StartLoginState);
 #else
             StartLoginState();
 #endif
         }
 
+        /// <summary>
+        /// Handle when enerting login state.
+        /// </summary>
         public void StartLoginState()
         {
             CurrentStateOfGame = GameStates.Login;
 
+            // If there is cached data on phone preform cold login.
             if(PlayfabManager.Inst.CheckIfLoginIsCached())
             {
                 PlayfabManager.Inst.ColdLogin(
@@ -73,6 +77,9 @@ namespace Assets.Scripts.Core
             UIManager.Inst.ShowLoginScreen();
         }
 
+        /// <summary>
+        /// Starts main menu state after login was successfully performed.
+        /// </summary>
         public void StartMainMenuState()
         {
             CurrentStateOfGame = GameStates.MainMenu;
@@ -91,6 +98,10 @@ namespace Assets.Scripts.Core
             UIManager.Inst.ShowMainMenu();
         }
 
+        /// <summary>
+        /// On game started.
+        /// </summary>
+        /// <param name="id"><see cref="SessionId"/></param>
         public void OnStartGame(string id)
         {
             CurrentStateOfGame = GameStates.Playing;
@@ -100,24 +111,26 @@ namespace Assets.Scripts.Core
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 Scene scene = SceneManager.GetSceneAt(i);
-                if ((scene.name == "FlappyBird" && scene.isLoaded))
+                if ((scene.name == Const.FLAPPY_BIRD_SCENE && scene.isLoaded))
                 {
                     SceneManager.UnloadSceneAsync(scene);
                 }
             }
-            SceneManager.LoadScene("FlappyBird", LoadSceneMode.Additive);
+            SceneManager.LoadScene(Const.FLAPPY_BIRD_SCENE, LoadSceneMode.Additive);
 
             UIManager.Inst.ShowInGamePannel();
         }
 
 
-
+        /// <summary>
+        /// On game lost.
+        /// </summary>
         public void OnGameLose()
         {
             CurrentStateOfGame = GameStates.Lose;
             UIManager.Inst.ShowLoseScreen();
 
-            // Perform decrypt and then encrypt in AES and send that to server which
+            // Perform decrypt and then encode and send that to server which
             // contains decrypt algorithm. RSA unfortunately requires some libraries 
             // on cloud which are not available.
             var gameInformation = DiContainerInitializor.Register<IGameInformation>();
@@ -126,7 +139,7 @@ namespace Assets.Scripts.Core
                 PlayfabManager.Inst.SubmitHighscore(Security.MagicHat(gameInformation.Score.ToString()));
             }
 
-            // Dont waste time if there is nothing to add.
+            // Don't waste time if there is nothing to add.
             if (gameInformation.CoinCollected > 0)
             {
                 PlayfabManager.Inst.AddCoins(SessionId, gameInformation.CoinCollected);

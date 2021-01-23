@@ -43,9 +43,9 @@ namespace General.State
         }
 
         /// <summary>
-        /// Swap state using priority
+        /// Swap state using priority.
         /// </summary>
-        /// <param name="newState"></param>
+        /// <param name="newState">The state that is attempting to perform swap.</param>
         public void SwapState(State newState)
         {
             if (newState == null) return;
@@ -57,6 +57,10 @@ namespace General.State
 
         }
 
+        /// <summary>
+        /// Forces swap of state. Not looking at priorities.
+        /// </summary>
+        /// <param name="newState">The new state.</param>
         public void ForceSwapState(State newState)
         {
             if (activeState != null) activeState.OnExit_State();
@@ -65,6 +69,10 @@ namespace General.State
 
         }
 
+        /// <summary>
+        /// End state.
+        /// </summary>
+        /// <param name="stateToEnd">The state that will be ended.</param>
         public void EndState(State stateToEnd)
         {
             if (stateToEnd == null) return;

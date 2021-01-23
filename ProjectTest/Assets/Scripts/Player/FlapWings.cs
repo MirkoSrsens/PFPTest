@@ -5,13 +5,23 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
+    /// <summary>
+    /// Defines player stat for moving upwards on mouse click.
+    /// </summary>
     public class FlapWings : State
     {
-        private Rigidbody2D _rigb { get; set; }
-
+        /// <summary>
+        /// Defines upwards force strenght.
+        /// </summary>
         [SerializeField]
         private float _force;
 
+        /// <summary>
+        /// Gets or sets rigidbody component.
+        /// </summary>
+        private Rigidbody2D _rigb { get; set; }
+
+        /// <inheritdoc/>
         protected override void Initialization_State()
         {
             base.Initialization_State();
@@ -24,6 +34,7 @@ namespace Assets.Scripts.Player
             }
         }
 
+        /// <inheritdoc/>
         public override void OnEnter_State()
         {
             designController.StartTask(GetType().Name, true);
@@ -33,6 +44,7 @@ namespace Assets.Scripts.Player
             controller.EndState(this);
         }
 
+        /// <inheritdoc/>
         public override void Update_State()
         {
             base.Update_State();
@@ -51,6 +63,7 @@ namespace Assets.Scripts.Player
             }
         }
 
+        /// <inheritdoc/>
         public override void OnExit_State()
         {
         }
@@ -63,11 +76,16 @@ namespace Assets.Scripts.Player
             }
         }
 
+        /// <summary>
+        /// Updates force strength on stats refresh.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         private void OnStatsRecieved(object sender, PlayfabUserReadonlyDataEventArgs eventArgs)
         {
-            if (eventArgs.Data.ContainsKey("WingFlapsStrenght"))
+            if (eventArgs.Data.ContainsKey(Const.STAT_WING_FLAPS_STRENGHT))
             {
-                _force += int.Parse(eventArgs.Data["WingFlapsStrenght"].Value)/10;
+                _force += int.Parse(eventArgs.Data[Const.STAT_WING_FLAPS_STRENGHT].Value)/10;
             }
         }
     }

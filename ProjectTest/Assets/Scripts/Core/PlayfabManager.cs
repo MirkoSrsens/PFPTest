@@ -213,10 +213,7 @@ namespace Assets.Scripts.Core
                 success =>
                 {
                     OnApiCallEnd();
-                    var userInfo = new PlayfabUserInfoEventArgs()
-                    {
-                        Username = success.AccountInfo.Username
-                    };
+                    var userInfo = new PlayfabUserInfoEventArgs(success.AccountInfo.Username, success.AccountInfo.PrivateInfo.Email);
 
                     OnRefreshUserDetailsData(this, userInfo);
                 },
@@ -526,7 +523,7 @@ namespace Assets.Scripts.Core
                     // our logic did not throw something.
                     if (success.Error == null)
                     {
-                        Debug.Log("Highscore submitted");
+                        Debug.Log("Coins added");
                     }
                     else
                     {
