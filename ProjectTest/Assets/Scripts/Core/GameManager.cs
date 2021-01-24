@@ -54,7 +54,7 @@ namespace Assets.Scripts.Core
             
             // Dont want to use this in editor, takes time.
 #if !UNITY_EDITOR
-           TrustContractManager.Inst.Sign(UIManager.Inst.PlayIntroSequence(), StartLoginState);
+           TrustContractManager.Inst.Sign(UIManager.Inst.PlayIntroSequence(), () => StartLoginState());
 #else
            StartLoginState();
 #endif

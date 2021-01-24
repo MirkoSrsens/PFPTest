@@ -4380,8 +4380,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6281818027828315307}
-        m_MethodName: ShowShop
+      - m_Target: {fileID: 49194969548798396}
+        m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

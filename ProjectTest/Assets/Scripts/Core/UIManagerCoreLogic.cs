@@ -113,7 +113,7 @@ namespace Assets.Scripts.Core
 
         public void ShowTimeCurrencyPanel()
         {
-            CloseAllExcept(_energyRechargePanel);
+            CloseAllExcept(null, new GameObject[] { _energyRechargePanel, _mainMenuPanel });
         }
 
         /// <summary>
