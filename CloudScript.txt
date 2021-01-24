@@ -212,11 +212,11 @@ function AddCoins_Internal(Id, Amount) {
         }; 
     var getUserReadOnlyDataResult = server.GetUserReadOnlyData(GetUserReadOnlyDataRequest);
     
-   if(!getUserReadOnlyDataResult.Data.hasOwnProperty("Id"))
+   if(!getUserReadOnlyDataResult.Data.hasOwnProperty(idString))
    {
        throw Error("This run was not registered by server so coins were not added!");
    }
-   else if(getUserReadOnlyDataResult.Data["Id"].Value != Id)
+   else if(getUserReadOnlyDataResult.Data[idString].Value != Id)
    {
        throw Error("This data did not match aborting");
    }
