@@ -4,16 +4,11 @@ blender_states.*
 test.unity*
 sandbox/
 sandbox U5/
-kingdom U4 backup/
 PlaygroundCache/
-kingdom/Logs/
 FlipbookGames*
 platforms/steam/steam_staging
 platforms/steam/steamconfig.sh
 build/
-kingdom/Builds/
-kingdom/SwitchIL2CPPCache/
-kingdom/SwitchIL2CPPStats/
 Builds/
 SwitchIL2CPPCache/
 SwitchIL2CPPStats/
@@ -34,7 +29,7 @@ ExportedObj/
 obj/
 *.svd
 *.userprefs
-kingdom/*.csproj
+PFPTest*.csproj
 *.pidb
 *.suo
 *.sln
@@ -66,34 +61,3 @@ kingdom/.vscode/launch.json
 
 
 xbox/Kingdom_ New Lands_RAWF.99_LocalizedStrings.xlsx
-
-kingdom/UWP/**/*.dll
-kingdom/UWP/**/*.pdb
-kingdom/UWP/**/*.pri
-kingdom/UWP/**/project.lock.json
-kingdom/UWP/Assembly-CSharp-firstpass/project.lock.json
-
-**/android/keystorepass.txt
-
-art_assets/logos and icons/*-assets/*.png
-
-kingdom/Assets/Rewired/Internal/Libraries/Runtime/Resources/Libs.meta
-
-kingdom/Assets/Scripts/Coatsink/Core/.svn/
-kingdom/Assets/Scripts/Coatsink/CustomAttributes/.svn/
-kingdom/Assets/Scripts/Coatsink/Haglet/.svn/
-kingdom/Assets/Scripts/Coatsink/Math/.svn/
-kingdom/Assets/Scripts/Coatsink/Serialization/.svn/
-
-kingdom/Assets/Plugins/Coatsink/*.digest
-kingdom/Assets/Plugins/Coatsink/*.digest.meta
-kingdom/Assets/Plugins/Coatsink/*.dll
-kingdom/Assets/Plugins/Coatsink/*.dll.meta
-
-kingdom/Assets/Plugins/Coatsink/Editor/*.digest
-kingdom/Assets/Plugins/Coatsink/Editor/*.digest.meta
-kingdom/Assets/Plugins/Coatsink/Editor/*.dll
-kingdom/Assets/Plugins/Coatsink/Editor/*.dll.meta
-
-kingdom/Assets/Plugins/Coatsink/link.xml
-kingdom/Assets/Plugins/Coatsink/link.xml.meta
