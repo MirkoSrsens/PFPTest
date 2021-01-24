@@ -248,6 +248,7 @@ GameObject:
   - component: {fileID: 6758554626989463534}
   - component: {fileID: 2325098725131069106}
   - component: {fileID: 2431485202956809627}
+  - component: {fileID: 5618604683965471396}
   m_Layer: 5
   m_Name: CatalogItem
   m_TagString: Untagged
@@ -368,6 +369,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 5618604683965471396}
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2325098725131069106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,3 +420,26 @@ MonoBehaviour:
   Name: {fileID: 6610503087032947686}
   Description: {fileID: 644661842668953811}
   Price: {fileID: 3030287395045095473}
+--- !u!114 &5618604683965471396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5030535523744270879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/OpenDetails
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 0
+  OverrideMaxDistance: 0

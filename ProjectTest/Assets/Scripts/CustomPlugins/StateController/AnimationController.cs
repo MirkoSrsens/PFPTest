@@ -1,9 +1,11 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace General.State
 {
-    public class AnimationController:MonoBehaviour
+    /// <summary>
+    /// Controlls animation of the object.
+    /// </summary>
+    public class AnimationController : MonoBehaviour
     {
         /// <summary>
         /// Gets or sets animator; 
@@ -13,6 +15,9 @@ namespace General.State
         private void Awake()
         {
             Anima = GetComponentInChildren<Animator>();
+
+            /// Prevent CPU lost on assigning and logging parameters that dont exist.
+            Anima.logWarnings = false;
         }
 
         /// <summary>

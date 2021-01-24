@@ -130,9 +130,16 @@ namespace Assets.Scripts.Core
         /// <param name="eventArgs">Data about error message.</param>
         private void DisplayErrorPopUp(object sender, PlayfabErrorHandlingEventArgs eventArgs)
         {
-            var split = eventArgs.Message.Split(Const.NEW_LINE);
-            // First line is the error cloud script returned, other lines are downhill stack trace.
-            _infoPanel.Setup(split[0]);
+            if (eventArgs.PlayfabError != null)
+            {
+                _infoPanel.Setup(eventArgs.PlayfabError.ErrorMessage);
+            }
+            else if (eventArgs.ScriptExecutionError != null)
+            {
+                var split = eventArgs.ScriptExecutionError.StackTrace.Split(Const.NEW_LINE);
+                // First line is the error cloud script returned, other lines are downhill stack trace.
+                _infoPanel.Setup(split[0]);
+            }
         }
 
         /// <summary>
@@ -156,6 +163,8 @@ namespace Assets.Scripts.Core
             _goldCount.text = eventArgs.Gold.ToString();
             _energyCount.text = eventArgs.Energy.ToString();
             _diamondCount.text = eventArgs.Diamonds.ToString();
+
+            GameManager.Inst.StartEnergyRestoreTimer(eventArgs.EnergyRechargeLeftStep, eventArgs.EnergyRechargeLimit);
         }
     }
 }

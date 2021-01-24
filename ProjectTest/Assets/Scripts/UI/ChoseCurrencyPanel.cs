@@ -39,7 +39,11 @@ namespace Assets.Scripts.UI
             {
                 var button = Pool.Inst.Spawn(_currencyButtonPrefab, _parentPanelOfCurrencyButtons);
                 button.GetComponentInChildren<Text>().text = item;
-                button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => PlayfabManager.Inst.BuyItem(catalogItem.ItemID, item)));
+                button.onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
+                {
+                    UIManager.Inst.ShowShop();
+                    PlayfabManager.Inst.BuyItem(catalogItem.ItemID, item);
+                }));
                 currencyButtons.Add(button);
             }
         }
@@ -50,6 +54,7 @@ namespace Assets.Scripts.UI
             // Cleanup of old items in shop planner section.
             for (int i = currencyButtons.Count - 1; i >= 0; i--)
             {
+                currencyButtons[i].onClick.RemoveAllListeners();
                 Pool.Inst.Despawn(currencyButtons[i]);
             }
         }

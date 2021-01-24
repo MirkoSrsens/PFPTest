@@ -24,11 +24,14 @@
     public const string STAT_MOVEMENT_SPEED = "MovementSpeed";
     public const string STAT_WING_FLAPS_STRENGHT = "WingFlapsStrenght";
     public const string SUFIX_CLONE = "(Clone)";
+    public const string FORMAT_ENERGY_CURRENCY_TEXT = "Time until next currency recharges will not increment if your energy is higher than {0}: \n {1}";
+    public const string FORMAT_STATS_TEXT = "LEVEL: {0} \n COST: {1}";
 
     // TAGS
     public const string TAG_POINT = "Point";
     public const string TAG_KILLER = "Killer";
     public const string TAG_COIN = "Coin";
+    public const string TAG_PLAYER = "Player";
 
     // VALUE MODIFIERS
     public const int POINT_WORTH = 1;

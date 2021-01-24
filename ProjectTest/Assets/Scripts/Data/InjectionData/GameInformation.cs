@@ -1,5 +1,4 @@
-﻿using System;
-using Assets.Scripts.Core;
+﻿using Assets.Scripts.Core;
 using Assets.Scripts.Data.Events;
 using UnityEngine;
 
@@ -7,16 +6,19 @@ namespace Assets.Scripts.Data.InjectionData
 {
     public class GameInformation : IGameInformation
     {
-        /// </inheridoc>
+        /// <inheridoc/>
         public GameObject Player { get; set; }
 
-        /// </inheridoc>
+        /// <inheridoc/>
         public Camera Camera { get; set; }
 
+        /// <inheridoc/>
         private string _score;
 
+        /// <inheridoc/>
         private string _currentHighScore;
 
+        /// <inheridoc/>
         private string _coinCollected;
 
         //Encrypt it so no outside manipulation cannot be easily performed, eg. cheat engine.
@@ -36,10 +38,11 @@ namespace Assets.Scripts.Data.InjectionData
         /// </summary>
         public GameInformation()
         {
-            Player = GameObject.FindGameObjectWithTag("Player");
+            Player = GameObject.FindGameObjectWithTag(Const.TAG_PLAYER);
             Camera = Camera.main;
             Score = 0;
             CoinCollected = 0;
+            CurrentHighScore = 0;
 
             if(PlayfabManager.Inst != null)
             {

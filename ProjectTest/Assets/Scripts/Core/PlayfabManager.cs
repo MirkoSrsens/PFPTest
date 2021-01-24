@@ -107,7 +107,7 @@ namespace Assets.Scripts.Core
         /// <param name="password">The password.</param>
         /// <param name="success">On success perform this action.</param>
         /// <param name="failed">On fail perform this action.</param>
-        public void PerformLogin(string username, string password, Action<LoginResult> success = null, Action<PlayFabError> failed = null)
+        public void PerformLogin(string username, string password, Action<LoginResult> success = null, Action<PlayFabError> onFailed = null)
         {
             var loginRequest = new LoginWithPlayFabRequest()
             {
@@ -141,22 +141,22 @@ namespace Assets.Scripts.Core
                         success(succ);
                     }
                 },
-                err =>
+                failed =>
                 {
                     OnApiCallEnd();
-                    if (err.Error == PlayFabErrorCode.AccountNotFound || err.Error == PlayFabErrorCode.InvalidParams)
+                    if (failed.Error == PlayFabErrorCode.AccountNotFound || failed.Error == PlayFabErrorCode.InvalidParams)
                     {
                         // Assume user name might be email actually. Don't trigger fail since it will be handled
                         // by login with email method.
-                        PerformLoginWithEmail(username, password, success, failed);
+                        PerformLoginWithEmail(username, password, success, onFailed);
                         return;
                     }
 
-                    Debug.LogError(err.ToString());
-                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(err.ToString()));
-                    if (failed != null)
+                    Debug.LogError(failed.ToString());
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
+                    if (onFailed != null)
                     {
-                        failed(err);
+                        onFailed(failed);
                     }
                 });
         }
@@ -166,37 +166,37 @@ namespace Assets.Scripts.Core
         /// </summary>
         /// <param name="email">The username of account.</param>
         /// <param name="password">The password of account.</param>
-        /// <param name="success">On success perform this.</param>
+        /// <param name="onSuccess">On success perform this.</param>
         /// <param name="failed">On failed perform this.</param>
-        private void PerformLoginWithEmail(string email, string password, Action<LoginResult> success, Action<PlayFabError> failed)
+        private void PerformLoginWithEmail(string email, string password, Action<LoginResult> onSuccess, Action<PlayFabError> onFailed)
         {
             var loginRequest = Mappings.CreateEmailRequest(email, password);
 
             OnApiCallStart();
             PlayFabClientAPI.LoginWithEmailAddress(loginRequest,
-                succ =>
+                success =>
                 {
                     OnApiCallEnd();
                     Debug.Log("Login with email was successful");
-                    PlayfabCurrentUserID = succ.PlayFabId;
+                    PlayfabCurrentUserID = success.PlayFabId;
 
                     PlayerPrefs.SetString(Const.PLAYFAB_USERNAME, Security.Encrypt(email));
                     PlayerPrefs.SetString(Const.PLAYFAB_PASSWORD, Security.Encrypt(password));
 
-                    if (success != null)
+                    if (onSuccess != null)
                     {
-                        success(succ);
+                        onSuccess(success);
                     }
                 },
-                err =>
+                failed =>
                 {
                     OnApiCallEnd();
-                    Debug.LogError(err.ToString());
-                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(err.ToString()));
+                    Debug.LogError(failed.ToString());
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
 
-                    if (failed == null)
+                    if (failed != null)
                     {
-                        failed(err);
+                        onFailed(failed);
                     }
                 });
         }
@@ -220,6 +220,7 @@ namespace Assets.Scripts.Core
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -238,13 +239,16 @@ namespace Assets.Scripts.Core
                 OnApiCallEnd();
                 var eventData = new PlayfabRefreshCurrencyEventArgs(success.VirtualCurrency[Const.ENERGY_CURRENCY],
                     success.VirtualCurrency[Const.GOLD_CURRENCY],
-                    success.VirtualCurrency[Const.DIAMONDS_CURRENCY]);
+                    success.VirtualCurrency[Const.DIAMONDS_CURRENCY],
+                    success.VirtualCurrencyRechargeTimes[Const.ENERGY_CURRENCY].SecondsToRecharge,
+                    success.VirtualCurrencyRechargeTimes[Const.ENERGY_CURRENCY].RechargeMax);
 
                 OnRefreshCurrencyDataEvent(this, eventData);
             },
             failed =>
             {
                 OnApiCallEnd();
+                OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                 Debug.LogError(failed.ToString());
             });
         }
@@ -267,6 +271,7 @@ namespace Assets.Scripts.Core
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -291,6 +296,7 @@ namespace Assets.Scripts.Core
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -315,6 +321,7 @@ namespace Assets.Scripts.Core
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -335,7 +342,7 @@ namespace Assets.Scripts.Core
                     OnApiCallEnd();
                     if (success.Error != null)
                     {
-                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error.StackTrace));
+                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error));
                         Debug.LogError(success.Error.ToString());
                         return;
                     }
@@ -347,6 +354,7 @@ namespace Assets.Scripts.Core
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -372,13 +380,14 @@ namespace Assets.Scripts.Core
                     }
                     else
                     {
-                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error.StackTrace));
+                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error));
                         Debug.LogError(success.Error.ToString());
                     }
                 },
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -404,13 +413,14 @@ namespace Assets.Scripts.Core
                     }
                     else
                     {
-                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error.StackTrace));
+                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error));
                         Debug.LogError(success.Error.ToString());
                     }
                 },
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -440,13 +450,14 @@ namespace Assets.Scripts.Core
                     }
                     else
                     {
-                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error.StackTrace));
+                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error));
                         Debug.LogError(success.Error.ToString());
                     }
                 },
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -471,7 +482,7 @@ namespace Assets.Scripts.Core
             failed =>
             {
                 OnApiCallEnd();
-                OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed.ErrorMessage));
+                OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
             });
         }
 
@@ -494,13 +505,14 @@ namespace Assets.Scripts.Core
                     }
                     else
                     {
-                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error.StackTrace));
+                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error));
                         Debug.LogError(success.Error.ToString());
                     }
                 },
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -527,13 +539,14 @@ namespace Assets.Scripts.Core
                     }
                     else
                     {
-                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error.StackTrace));
+                        OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(success.Error));
                         Debug.LogError(success.Error.ToString());
                     }
                 },
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
         }
@@ -556,7 +569,7 @@ namespace Assets.Scripts.Core
                 failed =>
                 {
                     OnApiCallEnd();
-                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed.ErrorMessage));
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                 });
         }
 

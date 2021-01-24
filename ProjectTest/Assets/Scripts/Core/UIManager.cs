@@ -65,6 +65,12 @@ namespace Assets.Scripts.Core
         // Hard currency.
         private Text _diamondCount;
 
+        [SerializeField]
+        private GameObject _energyRechargePanel;
+
+        [SerializeField]
+        private Text _energyRechargeTimeText;
+
         [Header("Shop elements")]
         [SerializeField]
         private GameObject _shopPanel;
@@ -105,6 +111,9 @@ namespace Assets.Scripts.Core
         [Header("Lose panel elements")]
         [SerializeField]
         private GameObject _losePanel;
+
+        [SerializeField]
+        private Text _loseScoreText;
 
         [SerializeField]
         private Text _loseHighscoreText;

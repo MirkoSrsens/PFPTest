@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PlayFab;
+using PlayFab.ClientModels;
+using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Data.Events
@@ -11,15 +13,31 @@ namespace Assets.Scripts.Data.Events
         /// <summary>
         /// Gets message defining error that happened.
         /// </summary>
-        public string Message { get; private set; }
+        public PlayFabError PlayfabError { get; private set; }
+
+        /// <summary>
+        /// Gets message defining script execution error.
+        /// </summary>
+        public ScriptExecutionError ScriptExecutionError { get; private set; }
 
         /// <summary>
         /// Constructor that creates new instance of <see cref="PlayfabErrorHandlingEventArgs"/>.
         /// </summary>
         /// <param name="message">The message that will be used.</param>
-        public PlayfabErrorHandlingEventArgs(string message)
+        /// <param name="errorCode">The error code that will be used.</param>
+        public PlayfabErrorHandlingEventArgs(PlayFabError error)
         {
-            this.Message = message;
+            this.PlayfabError = error;
+        }
+
+        /// <summary>
+        /// Constructor that creates new instance of <see cref="PlayfabErrorHandlingEventArgs"/>.
+        /// </summary>
+        /// <param name="message">The message that will be used.</param>
+        /// <param name="errorCode">The error code that will be used.</param>
+        public PlayfabErrorHandlingEventArgs(ScriptExecutionError error)
+        {
+            this.ScriptExecutionError = error;
         }
 
         /// <summary>

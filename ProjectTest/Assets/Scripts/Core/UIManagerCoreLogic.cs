@@ -1,5 +1,8 @@
 ﻿using Assets.Scripts.CustomPlugins.Utility;
+using Assets.Scripts.Data.InjectionData;
 using Assets.Scripts.UI;
+using DiContainerLibrary.DiContainer;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,19 +53,22 @@ namespace Assets.Scripts.Core
             CloseAllExcept(_mainMenuPanel);
         }
 
-        public void ShowShop(bool refreshCatalog = true)
+        public void ShowShop()
         {
-            if (refreshCatalog)
-            {
-                PlayfabManager.Inst.GetCatalogItems();
-            }
+            PlayfabManager.Inst.GetCatalogItems();
             CloseAllExcept(_shopPanel);
         }
 
         public void ShowLoseScreen()
         {
-            // Don't over complicate just copy one value to another.
-            _loseHighscoreText.text = _inGameHighscore.text;
+            var gameInformation = DiContainerInitializor.Register<IGameInformation>();
+
+            if(gameInformation != null)
+            {
+                _loseScoreText.text = gameInformation.Score.ToString();
+                _loseHighscoreText.text = gameInformation.CurrentHighScore.ToString();
+            }
+
             CloseAllExcept(_losePanel);
         }
 
@@ -105,6 +111,11 @@ namespace Assets.Scripts.Core
             CloseAllExcept(null, new GameObject[] { _signInPanel, _registerPanel });
         }
 
+        public void ShowTimeCurrencyPanel()
+        {
+            CloseAllExcept(_energyRechargePanel);
+        }
+
         /// <summary>
         /// This value will be used if multiple request are being loaded.
         /// Basicly it will prevent closing of loading screen until all requests are done.
@@ -118,7 +129,11 @@ namespace Assets.Scripts.Core
 
         public void HideLoadingPanel()
         {
-            depth--;
+            if (depth > 0)
+            {
+                depth--;
+            }
+
             if (depth == 0)
             {
                 _loadingPanel.SetActive(false);
@@ -141,8 +156,9 @@ namespace Assets.Scripts.Core
             _losePanel.gameObject.SetActive(false);
             _inGamePanel.gameObject.SetActive(false);
             _leaderboardPanel.gameObject.SetActive(false);
-            _infoPanel.gameObject.SetActive(false);
-            _loadingPanel.gameObject.SetActive(false);
+            //_infoPanel.gameObject.SetActive(false);
+            //_loadingPanel.gameObject.SetActive(false);
+            _energyRechargePanel.gameObject.SetActive(false);
 
             if (panel != null)
             {
@@ -224,6 +240,16 @@ namespace Assets.Scripts.Core
         public void UpdateInGameScore(int number)
         {
             _inGameHighscore.text = number.ToString();
+        }
+
+        /// <summary>
+        /// Updates value of timer on time currency 'Energy'
+        /// </summary>
+        /// <param name="rechargeTimeMax">The amount to set recharge to.</param>
+        /// <param name="energyRechargeLimit">The maximum amount of rechargeable energy.</param>
+        public void UpdateRechargeTimeOfEnergyValue(int rechargeTime, int energyRechargeLimit)
+        {
+            _energyRechargeTimeText.text = string.Format(Const.FORMAT_ENERGY_CURRENCY_TEXT, energyRechargeLimit.ToString(), rechargeTime.ToString());
         }
         #endregion
     }

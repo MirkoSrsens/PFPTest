@@ -44,7 +44,7 @@ namespace Assets.Scripts.UI
         {
             var number = int.Parse(level);
             var cost = number.CalculateCost().ToString();
-            _numberOfUpgrades.text = string.Concat(level,"/", cost);
+            _numberOfUpgrades.text = string.Format(Const.FORMAT_STATS_TEXT, level, cost);
             currentLevel = number;
         }
 

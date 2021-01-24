@@ -1,5 +1,8 @@
-﻿using Assets.Scripts.Data.InjectionData;
+﻿using Assets.Scripts.Data.Events;
+using Assets.Scripts.Data.InjectionData;
 using DiContainerLibrary.DiContainer;
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -38,6 +41,10 @@ namespace Assets.Scripts.Core
         /// </summary>
         private string SessionId { get { return Security.Decrypt(_sessionId); } set { _sessionId = Security.Encrypt(value.ToString()); } }
 
+        /// <summary>
+        /// Perform local iteration on energy refresh.
+        /// </summary>
+        private Coroutine timeCurrencyTimer { get; set; }
 
         private void Start()
         {
@@ -47,21 +54,39 @@ namespace Assets.Scripts.Core
             
             // Dont want to use this in editor, takes time.
 #if !UNITY_EDITOR
-           //TrustContractManager.Inst.Sign(UIManager.Inst.PlayIntroSequence(), StartLoginState);
+           TrustContractManager.Inst.Sign(UIManager.Inst.PlayIntroSequence(), StartLoginState);
 #else
-            StartLoginState();
+           StartLoginState();
 #endif
+        }
+
+        private void OnEnable()
+        {
+            if(PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.OnErrorEvent += OnSpecificErrorCases;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (PlayfabManager.Inst != null)
+            {
+                PlayfabManager.Inst.OnErrorEvent -= OnSpecificErrorCases;
+            }
         }
 
         /// <summary>
         /// Handle when enerting login state.
         /// </summary>
-        public void StartLoginState()
+        public void StartLoginState(bool coldLoginEnabled = true)
         {
             CurrentStateOfGame = GameStates.Login;
+            TrustContractManager.Inst.BreakeContract(timeCurrencyTimer);
+            UnloadSceneAsync(Const.FLAPPY_BIRD_SCENE);
 
             // If there is cached data on phone preform cold login.
-            if(PlayfabManager.Inst.CheckIfLoginIsCached())
+            if(PlayfabManager.Inst.CheckIfLoginIsCached() && coldLoginEnabled)
             {
                 PlayfabManager.Inst.ColdLogin(
                     success =>
@@ -86,14 +111,7 @@ namespace Assets.Scripts.Core
             mainMenuCamera.SetActive(true);
             PlayfabManager.Inst.GetUserAccountInformationData();
 
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                Scene scene = SceneManager.GetSceneAt(i);
-                if ((scene.name == "FlappyBird" && scene.isLoaded))
-                {
-                    SceneManager.UnloadSceneAsync(scene);
-                }
-            }
+            UnloadSceneAsync(Const.FLAPPY_BIRD_SCENE);
 
             UIManager.Inst.ShowMainMenu();
         }
@@ -108,19 +126,28 @@ namespace Assets.Scripts.Core
             mainMenuCamera.SetActive(false);
             SessionId = id;
 
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                Scene scene = SceneManager.GetSceneAt(i);
-                if ((scene.name == Const.FLAPPY_BIRD_SCENE && scene.isLoaded))
-                {
-                    SceneManager.UnloadSceneAsync(scene);
-                }
-            }
+            UnloadSceneAsync(Const.FLAPPY_BIRD_SCENE);
+
             SceneManager.LoadScene(Const.FLAPPY_BIRD_SCENE, LoadSceneMode.Additive);
 
             UIManager.Inst.ShowInGamePannel();
         }
 
+        /// <summary>
+        /// Unloads specific scene.
+        /// </summary>
+        /// <param name="sceneName">The scene to unload.</param>
+        private void UnloadSceneAsync(string sceneName)
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                Scene scene = SceneManager.GetSceneAt(i);
+                if ((scene.name == sceneName && scene.isLoaded))
+                {
+                    SceneManager.UnloadSceneAsync(scene);
+                }
+            }
+        }
 
         /// <summary>
         /// On game lost.
@@ -143,6 +170,51 @@ namespace Assets.Scripts.Core
             if (gameInformation.CoinCollected > 0)
             {
                 PlayfabManager.Inst.AddCoins(SessionId, gameInformation.CoinCollected);
+            }
+        }
+
+        /// <summary>
+        /// Starts refresh of energy points, depending on timer.
+        /// </summary>
+        /// <param name="rechargeTimeLeft">The time left until stats gets and update.</param>
+        /// <param name="energyRechargeLimit">The maximum amount of energy that user can have.</param>
+        public void StartEnergyRestoreTimer(int rechargeTimeLeft, int energyRechargeLimit)
+        {
+            TrustContractManager.Inst.BreakeContract(timeCurrencyTimer);
+
+            var action = new Action(() =>
+            {
+                rechargeTimeLeft--;
+                if (rechargeTimeLeft <=0)
+                {
+                    UIManager.Inst.UpdateRechargeTimeOfEnergyValue(0, energyRechargeLimit);
+                    return;
+                }
+
+                UIManager.Inst.UpdateRechargeTimeOfEnergyValue(rechargeTimeLeft, energyRechargeLimit);
+            });
+
+            timeCurrencyTimer = TrustContractManager.Inst.Sign(action, 1);
+        }
+
+        /// <summary>
+        /// Handle specific cases like no internet and similar issues.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private void OnSpecificErrorCases(object sender, PlayfabErrorHandlingEventArgs eventArgs)
+        {
+            if(eventArgs.PlayfabError != null)
+            {
+                switch(eventArgs.PlayfabError.Error)
+                {
+                    case PlayFab.PlayFabErrorCode.ServiceUnavailable:
+                        StartLoginState(false);
+                        break;
+                    default:
+                        break;
+
+                }
             }
         }
     }
