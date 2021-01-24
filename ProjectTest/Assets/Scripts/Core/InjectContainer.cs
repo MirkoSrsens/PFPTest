@@ -13,6 +13,12 @@ namespace Assets.Scripts.Core
         private void Awake()
         {
             DiContainerInitializor.Container.BindInstance<IGameInformation, GameInformation>().AsSingle();
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            DiContainerInitializor.Container.BindInstance<IInputController, MobileInputController>().AsSingle();
+#else
+            DiContainerInitializor.Container.BindInstance<IInputController, PCInputController>().AsSingle();
+#endif
         }
 
         private void OnDestroy()

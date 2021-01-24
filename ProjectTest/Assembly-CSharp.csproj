@@ -105,6 +105,9 @@
     <Compile Include="Assets\Scripts\Data\Events\PlayfabUserReadonlyDataEventArgs.cs" />
     <Compile Include="Assets\Scripts\Data\InjectionData\GameInformation.cs" />
     <Compile Include="Assets\Scripts\Data\InjectionData\IGameInformation.cs" />
+    <Compile Include="Assets\Scripts\Data\InjectionData\IInputController.cs" />
+    <Compile Include="Assets\Scripts\Data\InjectionData\MobileInputController.cs" />
+    <Compile Include="Assets\Scripts\Data\InjectionData\PCInputController.cs" />
     <Compile Include="Assets\Scripts\Data\Scriptable\IntroSequence.cs" />
     <Compile Include="Assets\Scripts\Enviroment\ObstacleShard.cs" />
     <Compile Include="Assets\Scripts\Enviroment\ObstacleSpawner.cs" />

@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.Core;
 using Assets.Scripts.Data.Events;
+using Assets.Scripts.Data.InjectionData;
+using DiContainerLibrary.DiContainer;
 using General.State;
 using UnityEngine;
 
@@ -10,6 +12,12 @@ namespace Assets.Scripts.Player
     /// </summary>
     public class FlapWings : State
     {
+        /// <summary>
+        /// Gets or sets injected object used for input implementation.
+        /// </summary>
+        [InjectDiContainter]
+        private IInputController input { get; set; }
+
         /// <summary>
         /// Defines upwards force strenght.
         /// </summary>
@@ -48,16 +56,8 @@ namespace Assets.Scripts.Player
         public override void Update_State()
         {
             base.Update_State();
-            foreach (Touch touch in Input.touches)
-            {
-                if (touch.phase == TouchPhase.Began)
-                {
-                    controller.SwapState(this);
-                    return;
-                }
-            }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if(input.IsKeyPressed)
             {
                 controller.SwapState(this);
             }
