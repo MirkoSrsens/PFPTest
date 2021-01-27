@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Assets.Scripts.Data.Events.PlayfabCatalogItemsEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabErrorHandlingEventArgs;
+using static Assets.Scripts.Data.Events.PlayfabGetUserDataEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabOnApiCallEndEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabOnApiCallStartEventArgs;
+using static Assets.Scripts.Data.Events.PlayfabOnConnectionDataRecievedEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabOnUserRegisteredEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabRefreshCurrencyEventArgs;
 using static Assets.Scripts.Data.Events.PlayfabRefreshLeaderboardsDataEventArgs;
@@ -49,6 +51,11 @@ namespace Assets.Scripts.Core
         public event PlayfabUserReadonlyDataEventHandler OnRefreshUserReadonlyData;
 
         /// <summary>
+        /// Used when we get response on get user data.
+        /// </summary>
+        public event PlayfabGetUserDataEventHandler OnRefreshUserData;
+
+        /// <summary>
         /// Used for error handling.
         /// </summary>
         public event PlayfabErrorHandlingEventHandler OnErrorEvent;
@@ -72,6 +79,11 @@ namespace Assets.Scripts.Core
         /// Triggers when new user is registered.
         /// </summary>
         public event PlayfabOnUserRegisteredEventHandler OnUserRegistered;
+
+        /// <summary>
+        /// Triggers when new user is registered.
+        /// </summary>
+        public event PlayfabOnConnectionDataRecievedEventHandler OnConneectionDataRecieved;
 
         /// <summary>
         /// Used for getting current user data from <see cref="GetUserAccountInformationData"/>.
@@ -305,9 +317,9 @@ namespace Assets.Scripts.Core
         /// Gets users readonly data with option to specify exact keys.
         /// </summary>
         /// <param name="keys">Custom keys refer to <see cref="GetUserDataRequest"/> for more info.</param>
-        public void GetUserReadonlyData(List<string> keys = null)
+        public void GetUserReadonlyData(List<string> keys = null, string playfabId = null)
         {
-            var request = Mappings.CreateGetUserDataRequest();
+            var request = Mappings.CreateGetUserDataRequest(keys,playfabId);
 
             OnApiCallStart();
             PlayFabClientAPI.GetUserReadOnlyData(request,
@@ -321,6 +333,31 @@ namespace Assets.Scripts.Core
                 failed =>
                 {
                     OnApiCallEnd();
+                    OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
+                    Debug.LogError(failed.ToString());
+                });
+        }
+
+        /// <summary>
+        /// Gets users data with option to specify exact keys, or user.
+        /// </summary>
+        /// <param name="keys">Custom keys refer to <see cref="GetUserDataRequest"/> for more info.</param>
+        public void GetUserData(List<string> keys = null, string playfabId = null)
+        {
+            var request = Mappings.CreateGetUserDataRequest(keys, playfabId);
+
+            OnApiCallStart?.Invoke();
+            PlayFabClientAPI.GetUserData(request,
+                success =>
+                {
+                    OnApiCallEnd?.Invoke();
+                    var eventArgs = new PlayfabGetUserDataEventArgs(success.Data);
+
+                    OnRefreshUserData(this, eventArgs);
+                },
+                failed =>
+                {
+                    OnApiCallEnd?.Invoke();
                     OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
                     Debug.LogError(failed.ToString());
                 });
@@ -570,6 +607,58 @@ namespace Assets.Scripts.Core
                 {
                     OnApiCallEnd();
                     OnErrorEvent(this, new PlayfabErrorHandlingEventArgs(failed));
+                });
+        }
+
+        /// <summary>
+        /// Updates users data with option to delete or add keys.
+        /// </summary>
+        /// <param name="add">Keys to add</param>
+        public void UpdateUserData(Dictionary<string, string> add = null, List<string> delete = null, UserDataPermission permission = UserDataPermission.Private )
+        {
+            var request = Mappings.CreateUpdateUserDataRequest(add, delete, permission);
+
+            OnApiCallStart?.Invoke();
+            PlayFabClientAPI.UpdateUserData(request,
+                success =>
+                {
+                    OnApiCallEnd?.Invoke();
+                    Debug.Log("Data updates successfully");
+                },
+                failed =>
+                {
+                    OnApiCallEnd?.Invoke();
+                    OnErrorEvent?.Invoke(this, new PlayfabErrorHandlingEventArgs(failed));
+                    Debug.LogError(failed.ToString());
+                });
+        }
+
+        public void ConnectUserToRoom(string hostUsername)
+        {
+            var request = Mappings.CreateAccountInfoRequest(username: hostUsername);
+            PlayFabClientAPI.GetAccountInfo(request,
+                success =>
+                {
+                    OnApiCallEnd?.Invoke();
+                    var req = Mappings.CreateGetUserDataRequest(new List<string>() { "test" }, success.AccountInfo.PlayFabId);
+                    PlayFabClientAPI.GetUserData(req,
+                        succ =>
+                        {
+                            var eventArgs = new PlayfabOnConnectionDataRecievedEventArgs(succ.Data["test"].Value);
+                            OnConneectionDataRecieved?.Invoke(this, eventArgs);
+                        },
+                        fail =>
+                        {
+                            OnApiCallEnd?.Invoke();
+                            OnErrorEvent?.Invoke(this, new PlayfabErrorHandlingEventArgs(fail));
+                            Debug.LogError(fail.ToString());
+                        });
+                },
+                failed =>
+                {
+                    OnApiCallEnd?.Invoke();
+                    OnErrorEvent?.Invoke(this, new PlayfabErrorHandlingEventArgs(failed));
+                    Debug.LogError(failed.ToString());
                 });
         }
 

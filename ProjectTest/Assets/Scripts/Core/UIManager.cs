@@ -138,5 +138,12 @@ namespace Assets.Scripts.Core
         [Header("Loading panel")]
         [SerializeField]
         private GameObject _loadingPanel;
+
+        [Header("Coop elements")]
+        [SerializeField]
+        private GameObject _coopPanel;
+
+        [SerializeField]
+        private InputField _coopUsernameText;
     }
 }

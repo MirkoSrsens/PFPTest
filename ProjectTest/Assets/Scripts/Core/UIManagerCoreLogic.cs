@@ -116,6 +116,11 @@ namespace Assets.Scripts.Core
             CloseAllExcept(null, new GameObject[] { _energyRechargePanel, _mainMenuPanel });
         }
 
+        public void ShowCoopPanel()
+        {
+            CloseAllExcept(_coopPanel);
+        }
+
         /// <summary>
         /// This value will be used if multiple request are being loaded.
         /// Basicly it will prevent closing of loading screen until all requests are done.
@@ -156,9 +161,8 @@ namespace Assets.Scripts.Core
             _losePanel.gameObject.SetActive(false);
             _inGamePanel.gameObject.SetActive(false);
             _leaderboardPanel.gameObject.SetActive(false);
-            //_infoPanel.gameObject.SetActive(false);
-            //_loadingPanel.gameObject.SetActive(false);
             _energyRechargePanel.gameObject.SetActive(false);
+            _coopPanel.gameObject.SetActive(false);
 
             if (panel != null)
             {
@@ -213,6 +217,16 @@ namespace Assets.Scripts.Core
         public void OnClick_SignOut()
         {
             PlayfabManager.Inst.SignOut();
+        }
+
+        public void OnClick_ConnectToHost()
+        {
+            PlayfabManager.Inst.ConnectUserToRoom(_coopUsernameText.text);
+        }
+
+        public void OnClick_CreateRoom()
+        {
+            PlayfabPartyManager.Inst.CreateRoom();
         }
         #endregion
 

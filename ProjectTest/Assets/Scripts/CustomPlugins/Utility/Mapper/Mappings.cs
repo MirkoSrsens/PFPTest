@@ -1,5 +1,7 @@
 ﻿using PlayFab;
 using PlayFab.ClientModels;
+using PlayFab.MultiplayerModels;
+using System;
 using System.Collections.Generic;
 
 namespace Assets.Scripts.CustomPlugins.Utility
@@ -58,11 +60,13 @@ namespace Assets.Scripts.CustomPlugins.Utility
         /// </summary>
         /// <param name="playfabUserID">Optional parameter, will use default if not provided.</param>
         /// <returns>Return new <see cref="GetAccountInfoRequest"/>.</returns>
-        public static GetAccountInfoRequest CreateAccountInfoRequest(string playfabUserID = null)
+        public static GetAccountInfoRequest CreateAccountInfoRequest(string playfabUserID = null, string username = null, string displayName = null)
         {
             return new GetAccountInfoRequest()
             {
-                PlayFabId = playfabUserID
+                PlayFabId = playfabUserID,
+                Username = username,
+                TitleDisplayName = displayName
             };
         }
 
@@ -97,11 +101,27 @@ namespace Assets.Scripts.CustomPlugins.Utility
         /// </summary>
         /// <param name="keys">Optional parameter, will use default if not provided.</param>
         /// <returns>The new <see cref="GetUserDataRequest"/>.</returns>
-        public static GetUserDataRequest CreateGetUserDataRequest(List<string> keys = null)
+        public static GetUserDataRequest CreateGetUserDataRequest(List<string> keys = null, string playfabId = null)
         {
             return new GetUserDataRequest()
             {
-                Keys = keys
+                Keys = keys,
+                PlayFabId = playfabId
+            };
+        }
+
+        /// <summary>
+        /// Creates new <see cref="UpdateUserDataRequest"/>.
+        /// </summary>
+        /// <param name="keys">Optional parameter, will use default if not provided.</param>
+        /// <returns>The new <see cref="UpdateUserDataRequest"/>.</returns>
+        public static UpdateUserDataRequest CreateUpdateUserDataRequest(Dictionary<string,string> add = null, List<string> delete = null, UserDataPermission permission = UserDataPermission.Private)
+        {
+            return new UpdateUserDataRequest()
+            {
+                Data = add,
+                KeysToRemove = delete,
+                Permission = permission
             };
         }
 
@@ -152,6 +172,80 @@ namespace Assets.Scripts.CustomPlugins.Utility
                 Username = username,
                 Email = email,
                 Password = password
+            };
+        }
+
+        /// <summary>
+        /// Creates new <see cref="CreateMatchmakingTicketRequest"/>
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="queueName">The queue name.</param>
+        /// <returns>Returns new <see cref="CreateMatchmakingTicketRequest"/></returns>
+        public static CreateMatchmakingTicketRequest CreateMatchmakingTicketRequest(string id, string type, string queueName)
+        {
+            return new CreateMatchmakingTicketRequest()
+            {
+                Creator = new MatchmakingPlayer()
+                {
+                    Entity = new PlayFab.MultiplayerModels.EntityKey
+                    {
+                        Id = id,
+                        Type = type
+                    },
+                    Attributes = new MatchmakingPlayerAttributes
+                    {
+                        DataObject = new { Skill = 0 }
+                    }
+                },
+                GiveUpAfterSeconds = 60,
+                QueueName = queueName
+            };
+        }
+
+        /// <summary>
+        /// Creates new <see cref="GetMatchmakingTicketRequest"/>
+        /// </summary>
+        /// <param name="ticketId">The ticket identifier.</param>
+        /// <param name="queueName">The queue name.</param>
+        /// <returns>Returns new <see cref="GetMatchmakingTicketRequest"/></returns>
+        public static GetMatchmakingTicketRequest CreateGetMatchmakingTicketRequest(string ticketId, string queueName)
+        {
+            return new GetMatchmakingTicketRequest()
+            {
+                TicketId = ticketId,
+                QueueName = queueName
+            };
+        }
+
+        /// <summary>
+        /// Creates new <see cref="GetMatchRequest"/>
+        /// </summary>
+        /// <param name="matchId">The match identifier.</param>
+        /// <param name="queueName">The queue name.</param>
+        /// <returns>Returns new <see cref="GetMatchRequest"/></returns>
+        public static GetMatchRequest CreateGetMatchRequest(string matchId, string queueName)
+        {
+            return new GetMatchRequest()
+            {
+                MatchId = matchId,
+                QueueName = queueName
+            };
+        }
+
+
+        /// <summary>
+        /// Creates new <see cref="CancelMatchmakingTicketRequest"/>
+        /// </summary>
+        /// <param name="ticketId">The ticket identifier.</param>
+        /// <param name="queueName">The queue name.</param>
+        /// <returns>Returns new <see cref="CancelMatchmakingTicketRequest"/></returns>
+        public static CancelMatchmakingTicketRequest CancelMatchmakingTicket(string ticketId, string queueName)
+        {
+            return new CancelMatchmakingTicketRequest()
+            {
+                TicketId = ticketId,
+                QueueName = queueName
             };
         }
     }

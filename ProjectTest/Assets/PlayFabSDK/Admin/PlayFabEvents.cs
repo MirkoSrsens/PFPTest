@@ -35,8 +35,6 @@ namespace PlayFab.Events
         public event PlayFabResultEvent<CreatePlayerSharedSecretResult> OnAdminCreatePlayerSharedSecretResultEvent;
         public event PlayFabRequestEvent<CreatePlayerStatisticDefinitionRequest> OnAdminCreatePlayerStatisticDefinitionRequestEvent;
         public event PlayFabResultEvent<CreatePlayerStatisticDefinitionResult> OnAdminCreatePlayerStatisticDefinitionResultEvent;
-        public event PlayFabRequestEvent<CreateSegmentRequest> OnAdminCreateSegmentRequestEvent;
-        public event PlayFabResultEvent<CreateSegmentResponse> OnAdminCreateSegmentResultEvent;
         public event PlayFabRequestEvent<DeleteContentRequest> OnAdminDeleteContentRequestEvent;
         public event PlayFabResultEvent<BlankResult> OnAdminDeleteContentResultEvent;
         public event PlayFabRequestEvent<DeleteMasterPlayerAccountRequest> OnAdminDeleteMasterPlayerAccountRequestEvent;
@@ -47,8 +45,6 @@ namespace PlayFab.Events
         public event PlayFabResultEvent<DeletePlayerResult> OnAdminDeletePlayerResultEvent;
         public event PlayFabRequestEvent<DeletePlayerSharedSecretRequest> OnAdminDeletePlayerSharedSecretRequestEvent;
         public event PlayFabResultEvent<DeletePlayerSharedSecretResult> OnAdminDeletePlayerSharedSecretResultEvent;
-        public event PlayFabRequestEvent<DeleteSegmentRequest> OnAdminDeleteSegmentRequestEvent;
-        public event PlayFabResultEvent<DeleteSegmentsResponse> OnAdminDeleteSegmentResultEvent;
         public event PlayFabRequestEvent<DeleteStoreRequest> OnAdminDeleteStoreRequestEvent;
         public event PlayFabResultEvent<DeleteStoreResult> OnAdminDeleteStoreResultEvent;
         public event PlayFabRequestEvent<DeleteTaskRequest> OnAdminDeleteTaskRequestEvent;
@@ -105,8 +101,6 @@ namespace PlayFab.Events
         public event PlayFabResultEvent<GetPublisherDataResult> OnAdminGetPublisherDataResultEvent;
         public event PlayFabRequestEvent<GetRandomResultTablesRequest> OnAdminGetRandomResultTablesRequestEvent;
         public event PlayFabResultEvent<GetRandomResultTablesResult> OnAdminGetRandomResultTablesResultEvent;
-        public event PlayFabRequestEvent<GetSegmentsRequest> OnAdminGetSegmentsRequestEvent;
-        public event PlayFabResultEvent<GetSegmentsResponse> OnAdminGetSegmentsResultEvent;
         public event PlayFabRequestEvent<GetServerBuildInfoRequest> OnAdminGetServerBuildInfoRequestEvent;
         public event PlayFabResultEvent<GetServerBuildInfoResult> OnAdminGetServerBuildInfoResultEvent;
         public event PlayFabRequestEvent<GetServerBuildUploadURLRequest> OnAdminGetServerBuildUploadUrlRequestEvent;
@@ -219,8 +213,6 @@ namespace PlayFab.Events
         public event PlayFabResultEvent<UpdatePolicyResponse> OnAdminUpdatePolicyResultEvent;
         public event PlayFabRequestEvent<UpdateRandomResultTablesRequest> OnAdminUpdateRandomResultTablesRequestEvent;
         public event PlayFabResultEvent<UpdateRandomResultTablesResult> OnAdminUpdateRandomResultTablesResultEvent;
-        public event PlayFabRequestEvent<UpdateSegmentRequest> OnAdminUpdateSegmentRequestEvent;
-        public event PlayFabResultEvent<UpdateSegmentResponse> OnAdminUpdateSegmentResultEvent;
         public event PlayFabRequestEvent<UpdateStoreItemsRequest> OnAdminUpdateStoreItemsRequestEvent;
         public event PlayFabResultEvent<UpdateStoreItemsResult> OnAdminUpdateStoreItemsResultEvent;
         public event PlayFabRequestEvent<UpdateTaskRequest> OnAdminUpdateTaskRequestEvent;
