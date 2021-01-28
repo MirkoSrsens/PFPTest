@@ -12,6 +12,7 @@ public enum GameStates
     Login, // Waiting for user to login
     MainMenu, // Main menu
     Playing, // Playing the game
+    PlayingNetwork,
     Lose, // On lose game.
 }
 
@@ -147,6 +148,21 @@ namespace Assets.Scripts.Core
                     SceneManager.UnloadSceneAsync(scene);
                 }
             }
+        }
+
+        public void StartNetworkSession()
+        {
+            CurrentStateOfGame = GameStates.Playing;
+            mainMenuCamera.SetActive(false);
+            UnloadSceneAsync(Const.NETWORK_ROOM_SCENE);
+            SceneManager.LoadScene(Const.NETWORK_ROOM_SCENE, LoadSceneMode.Additive);
+
+            if (PlayfabPartyManager.Inst.IsHost)
+            {
+                NetworkingAdapter.Inst.NotifyClientsGameIsStarting();
+            }
+
+            UIManager.Inst.CloseAllExcept();
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Core;
+using Assets.Scripts.Data.NetworkMessages;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ namespace Assets.Scripts.CustomPlugins.Utility
         /// Gets or sets dictionary of pooled objects.
         /// </summary>
         private Dictionary<string, Queue<Component>> pooledObjects { get; set; }
+
+        [SerializeField]
+        private List<GameObject> poolList;
 
         private void Awake()
         {
@@ -65,6 +69,63 @@ namespace Assets.Scripts.CustomPlugins.Utility
             }
 
             pooledObjects[nameWithoutClone].Enqueue(despawnObject);
+        }
+
+        public void NetworkSendSpawn<T>(T spawnObject, Vector2 position, Quaternion rotation)
+            where T : Component
+        {
+            if (!pooledObjects.ContainsKey(spawnObject.name))
+            {
+                pooledObjects.Add(spawnObject.name, new Queue<Component>());
+            }
+
+            if (pooledObjects[spawnObject.name].Count <= 0)
+            {
+                Instantiate(spawnObject,position, rotation, null);
+            }
+            else
+            {
+                var obj = pooledObjects[spawnObject.name].Dequeue();
+                obj.transform.position = position;
+                obj.transform.rotation = rotation;
+                obj.transform.SetParent(null);
+                obj.gameObject.SetActive(true);
+                obj.GetComponent<T>();
+            }
+
+            var message = new SpawnMessage(spawnObject.name, position.x, position.y, rotation.eulerAngles.x, rotation.eulerAngles.y, rotation.eulerAngles.z);
+
+            NetworkingAdapter.Inst.playfabManager.SendDataMessageToAllPlayers(message.ObjectToByteArray());
+        }
+
+        public void NetworkRecieveSpawn(SpawnMessage msg)
+        {
+            if (!pooledObjects.ContainsKey(msg.PrefabName))
+            {
+                pooledObjects.Add(msg.PrefabName, new Queue<Component>());
+            }
+
+            var position = new Vector2(msg.PositionX, msg.PositionY);
+            var rotation = Quaternion.Euler(msg.RotationX, msg.RotationY, msg.RotationZ);
+
+            if (pooledObjects[msg.PrefabName].Count <= 0)
+            {
+                foreach (var item in poolList)
+                {
+                    if (item.name == msg.PrefabName)
+                    {
+                        Instantiate(item, position, rotation, null);
+                    }
+                }
+            }
+            else
+            {
+                var obj = pooledObjects[msg.PrefabName].Dequeue();
+                obj.transform.position = position;
+                obj.transform.rotation = rotation;
+                obj.transform.SetParent(null);
+                obj.gameObject.SetActive(true);
+            }
         }
     }
 }

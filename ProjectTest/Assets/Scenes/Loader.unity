@@ -1293,7 +1293,6 @@ GameObject:
   - component: {fileID: 1448234103}
   - component: {fileID: 1448234106}
   - component: {fileID: 1448234107}
-  - component: {fileID: 1448234108}
   m_Layer: 0
   m_Name: Core
   m_TagString: Untagged
@@ -1364,15 +1363,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0a51723107fa264891388c95cc4586b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1448234108
+  poolList:
+  - {fileID: 569328591873862236, guid: a164f05140d896f4ea04bbc720aedc82, type: 3}
+--- !u!1 &1951963817 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1687376086940299685, guid: fec5eaf2950dc044b8b3af489b7efc6d,
+    type: 3}
+  m_PrefabInstance: {fileID: 543593757}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1951963818
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1448234102}
+  m_GameObject: {fileID: 1951963817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ed07957420eb8f408cb4d7b10bddc5e, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ba689aa0f4d4ab4daef26de547d2a62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxNumberOfRemoteUsers: 2
+  MinNumberOfRemoteUsers: 1
+--- !u!114 &1951963819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951963817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0867e5d12672c5488ee402b7ac50804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 569328591873862236, guid: a164f05140d896f4ea04bbc720aedc82,
+    type: 3}

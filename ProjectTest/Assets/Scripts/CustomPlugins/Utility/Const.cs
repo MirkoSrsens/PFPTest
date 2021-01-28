@@ -12,6 +12,7 @@
     public const string DEFAULT_LEADERBOARD_NAME = "-";
     public const int DEFAULT_LEADERBOARD_SCORE = 0;
     public const string FLAPPY_BIRD_SCENE = "FlappyBird";
+    public const string NETWORK_ROOM_SCENE = "NetworkRoom";
     public const string DISPLAY_CURRENCY_FORMAT = "{0}: {1} /";
     public const char NEW_LINE = '\n';
     public const string ON_REGISTRATION_SUCCESS = "New user registered, please login!";
