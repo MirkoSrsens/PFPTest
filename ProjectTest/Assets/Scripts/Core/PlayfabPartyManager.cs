@@ -1,11 +1,10 @@
 ﻿using Assets.Scripts.Data.Events;
 using Assets.Scripts.Data.NetworkMessages;
-using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.Party;
-using System;
 using System.Text;
 using UnityEngine;
+using static Assets.Scripts.Data.Events.PlayfabOnMessageRecievedEventArgs;
 
 namespace Assets.Scripts.Core
 {
@@ -23,6 +22,8 @@ namespace Assets.Scripts.Core
 
         public PlayFabMultiplayerManager playfabManager { get; set; }
 
+        public event OnNetworkMessageRecievedEventHandler OnMessageRecieved;
+
         private void Awake()
         {
             playfabManager = PlayFabMultiplayerManager.Get();
@@ -31,7 +32,6 @@ namespace Assets.Scripts.Core
             playfabManager.OnRemotePlayerJoined += OnRemotePlayerJoined;
             playfabManager.OnRemotePlayerLeft += OnRemotePlayerLeft;
             playfabManager.OnDataMessageReceived += OnDataMessageReceived;
-            playfabManager.OnChatMessageReceived += OnChatMessageReceived;
             PlayfabManager.Inst.OnConneectionDataRecieved += JoinRoom;
         }
 
@@ -47,17 +47,9 @@ namespace Assets.Scripts.Core
             playfabManager.JoinNetwork(networkToJoin.NetworkId);
         }
 
-        private void OnLoginSuccess(LoginResult result)
-        {
-        }
-
-        private void OnLoginFailure(PlayFabError error)
-        {
-        }
-
         private void OnNetworkLeft(object sender, string networkId)
         {
-            IsOnline = true;
+            IsOnline = false;
         }
 
         private void OnNetworkJoined(object sender, string networkId)
@@ -86,30 +78,9 @@ namespace Assets.Scripts.Core
         private void OnDataMessageReceived(object sender, PlayFabPlayer from, byte[] buffer)
         {
             Debug.Log(Encoding.Default.GetString(buffer));
-            var msg = buffer.ByteArrayToObject();
-            if(msg is NotifyGameIsStarting)
-            {
-                NetworkingAdapter.Inst.HandleNotifyClientGameIsStarting((NotifyGameIsStarting)msg);
-            }
-            if (msg is SpawnMessage)
-            {
-                NetworkingAdapter.Inst.HandleSpawnPlayers((SpawnMessage)msg);
-            }
-        }
+            var msg = (INetworkMessage)buffer.ByteArrayToObject();
 
-        private void OnChatMessageReceived(object sender, PlayFabPlayer from, string message, ChatMessageType type)
-        {
-            Debug.Log(message);
-        }
-
-        public void Update()
-        {
-            if (Input.GetButtonDown("Fire1"))
-            {
-                Debug.Log("FIREE");
-                byte[] requestAsBytes = Encoding.UTF8.GetBytes("Hello (data message)");
-                playfabManager.SendDataMessageToAllPlayers(requestAsBytes);
-            }
+            OnMessageRecieved?.Invoke(msg);
         }
     }
 }

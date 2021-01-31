@@ -1,8 +1,9 @@
 ﻿using Assets.Scripts.Data.Events;
 using Assets.Scripts.Data.InjectionData;
+using Assets.Scripts.Data.NetworkMessages;
+using Assets.Scripts.Network;
 using DiContainerLibrary.DiContainer;
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -159,7 +160,7 @@ namespace Assets.Scripts.Core
 
             if (PlayfabPartyManager.Inst.IsHost)
             {
-                NetworkingAdapter.Inst.NotifyClientsGameIsStarting();
+                NetworkMessageHandler.Inst.Send(new NotifyGameIsStarting());
             }
 
             UIManager.Inst.CloseAllExcept();

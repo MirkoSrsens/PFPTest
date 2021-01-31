@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.Data.NetworkMessages
 {
     [Serializable]
-    public class NotifyGameIsStarting
+    public class NotifyGameIsStarting : INetworkMessage
     {
     }
 }

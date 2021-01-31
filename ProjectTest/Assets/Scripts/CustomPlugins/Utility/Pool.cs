@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Core;
 using Assets.Scripts.Data.NetworkMessages;
+using Assets.Scripts.Network;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,11 +16,17 @@ namespace Assets.Scripts.CustomPlugins.Utility
         /// </summary>
         private Dictionary<string, Queue<Component>> pooledObjects { get; set; }
 
+        /// <summary>
+        /// Defines network ids used to find pooled objects.
+        /// </summary>
+        public Dictionary<int, NetworkObject> NetworkRegisteredObjects { get; set; }
+
         [SerializeField]
-        private List<GameObject> poolList;
+        private List<NetworkObject> poolList;
 
         private void Awake()
         {
+            NetworkRegisteredObjects = new Dictionary<int, NetworkObject>();
             pooledObjects = new Dictionary<string, Queue<Component>>();
         }
 
@@ -71,31 +78,38 @@ namespace Assets.Scripts.CustomPlugins.Utility
             pooledObjects[nameWithoutClone].Enqueue(despawnObject);
         }
 
-        public void NetworkSendSpawn<T>(T spawnObject, Vector2 position, Quaternion rotation)
-            where T : Component
+        public int NetworkSendSpawn<T>(T spawnObject, Vector2 position, Quaternion rotation)
+            where T : NetworkObject
         {
             if (!pooledObjects.ContainsKey(spawnObject.name))
             {
                 pooledObjects.Add(spawnObject.name, new Queue<Component>());
             }
 
+            var obj = default(NetworkObject);
+
             if (pooledObjects[spawnObject.name].Count <= 0)
             {
-                Instantiate(spawnObject,position, rotation, null);
+                obj = Instantiate<NetworkObject>(spawnObject,position, rotation, null);
             }
             else
             {
-                var obj = pooledObjects[spawnObject.name].Dequeue();
+                obj = pooledObjects[spawnObject.name].Dequeue().GetComponent<NetworkObject>();
                 obj.transform.position = position;
                 obj.transform.rotation = rotation;
                 obj.transform.SetParent(null);
                 obj.gameObject.SetActive(true);
-                obj.GetComponent<T>();
             }
 
-            var message = new SpawnMessage(spawnObject.name, position.x, position.y, rotation.eulerAngles.x, rotation.eulerAngles.y, rotation.eulerAngles.z);
+            var id = NetworkRegisteredObjects.Count;
+            NetworkRegisteredObjects.Add(id, obj);
+            obj.ID = id;
 
-            NetworkingAdapter.Inst.playfabManager.SendDataMessageToAllPlayers(message.ObjectToByteArray());
+            var message = new SpawnMessage(id, spawnObject.name, position.x, position.y, rotation.eulerAngles.x, rotation.eulerAngles.y, rotation.eulerAngles.z);
+
+            NetworkMessageHandler.Inst.Send(message);
+
+            return obj.ID;
         }
 
         public void NetworkRecieveSpawn(SpawnMessage msg)
@@ -108,23 +122,36 @@ namespace Assets.Scripts.CustomPlugins.Utility
             var position = new Vector2(msg.PositionX, msg.PositionY);
             var rotation = Quaternion.Euler(msg.RotationX, msg.RotationY, msg.RotationZ);
 
+            var obj = default(NetworkObject);
+
             if (pooledObjects[msg.PrefabName].Count <= 0)
             {
                 foreach (var item in poolList)
                 {
                     if (item.name == msg.PrefabName)
                     {
-                        Instantiate(item, position, rotation, null);
+                        obj = Instantiate(item.GetComponent<NetworkObject>(), position, rotation, null);
+                        obj.ID = msg.NetworkId;
                     }
                 }
             }
             else
             {
-                var obj = pooledObjects[msg.PrefabName].Dequeue();
+                obj = pooledObjects[msg.PrefabName].Dequeue().GetComponent<NetworkObject>();
                 obj.transform.position = position;
                 obj.transform.rotation = rotation;
                 obj.transform.SetParent(null);
                 obj.gameObject.SetActive(true);
+                obj.ID = msg.NetworkId;
+            }
+
+            if (!NetworkRegisteredObjects.ContainsKey(obj.ID))
+            {
+                NetworkRegisteredObjects.Add(NetworkRegisteredObjects.Count, obj);
+            }
+            else
+            {
+                NetworkRegisteredObjects[obj.ID] = obj;
             }
         }
     }

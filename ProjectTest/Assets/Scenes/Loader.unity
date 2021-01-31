@@ -385,7 +385,7 @@ PrefabInstance:
     - target: {fileID: 1687376086940299685, guid: fec5eaf2950dc044b8b3af489b7efc6d,
         type: 3}
       propertyPath: m_Name
-      value: PlayFabMultiplayerManager
+      value: Networking
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fec5eaf2950dc044b8b3af489b7efc6d, type: 3}
@@ -1091,7 +1091,7 @@ PrefabInstance:
     - target: {fileID: 6281818027828315306, guid: ed1f095455412eb459057fa110d73948,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6281818027828315306, guid: ed1f095455412eb459057fa110d73948,
         type: 3}
@@ -1291,8 +1291,6 @@ GameObject:
   - component: {fileID: 1448234105}
   - component: {fileID: 1448234104}
   - component: {fileID: 1448234103}
-  - component: {fileID: 1448234106}
-  - component: {fileID: 1448234107}
   m_Layer: 0
   m_Name: Core
   m_TagString: Untagged
@@ -1339,32 +1337,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1448234106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1448234102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50b2cf9b71761f5408583d73a772f234, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1448234107
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1448234102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0a51723107fa264891388c95cc4586b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  poolList:
-  - {fileID: 569328591873862236, guid: a164f05140d896f4ea04bbc720aedc82, type: 3}
 --- !u!1 &1951963817 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1687376086940299685, guid: fec5eaf2950dc044b8b3af489b7efc6d,
@@ -1397,5 +1369,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0867e5d12672c5488ee402b7ac50804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 569328591873862236, guid: a164f05140d896f4ea04bbc720aedc82,
+  playerPrefab: {fileID: 8491890293497620867, guid: a164f05140d896f4ea04bbc720aedc82,
     type: 3}
+--- !u!114 &1951963820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951963817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b2cf9b71761f5408583d73a772f234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1959850219
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1959850221}
+  - component: {fileID: 1959850220}
+  m_Layer: 0
+  m_Name: Pool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1959850220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1959850219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0a51723107fa264891388c95cc4586b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolList:
+  - {fileID: 8491890293497620867, guid: a164f05140d896f4ea04bbc720aedc82, type: 3}
+--- !u!4 &1959850221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1959850219}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 285.62375, y: 131.73994, z: -6.3748116}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

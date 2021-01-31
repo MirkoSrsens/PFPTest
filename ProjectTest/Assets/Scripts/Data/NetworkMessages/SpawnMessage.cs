@@ -1,10 +1,9 @@
 ﻿using System;
-using UnityEngine;
 
 namespace Assets.Scripts.Data.NetworkMessages
 {
     [Serializable]
-    public class SpawnMessage
+    public class SpawnMessage : INetworkMessage
     {
         public string PrefabName { get; set; }
         
@@ -18,7 +17,9 @@ namespace Assets.Scripts.Data.NetworkMessages
 
         public float RotationZ { get; set; }
 
-        public SpawnMessage(string prefabName, float posX, float posY, float rotX, float rotY, float rotZ)
+        public int NetworkId { get; set; }
+
+        public SpawnMessage(int networkId, string prefabName, float posX, float posY, float rotX, float rotY, float rotZ)
         {
             this.PrefabName = prefabName;
             this.PositionX = posX;
@@ -26,6 +27,7 @@ namespace Assets.Scripts.Data.NetworkMessages
             this.RotationX = rotX;
             this.RotationY = rotY;
             this.RotationZ = rotZ;
+            this.NetworkId = networkId;
         }
     }
 }
