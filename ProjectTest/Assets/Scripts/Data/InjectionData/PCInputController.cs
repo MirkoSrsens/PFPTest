@@ -7,12 +7,14 @@ namespace Assets.Scripts.Data.InjectionData
     /// </summary>
     public class PCInputController : IInputController
     {
-        public bool IsKeyPressed
-        {
-            get
-            {
-                return Input.GetKeyDown(KeyCode.Space);
-            }
-        }
+        public bool Left { get { return Input.GetKey(KeyCode.A); } }
+
+        public bool Right { get { return Input.GetKey(KeyCode.D); } }
+
+        public bool Up { get { return Input.GetKey(KeyCode.W); } }
+
+        public bool Down { get { return Input.GetKey(KeyCode.S); } }
+
+        public bool MovementInputDetected { get { return Left || Right || Up || Down; } }
     }
 }

@@ -2,9 +2,14 @@
 {
     public interface IInputController
     {
-        /// <summary>
-        /// Gets value signaling if specific key is being pressed.
-        /// </summary>
-        bool IsKeyPressed { get; }
+        bool MovementInputDetected { get; }
+
+        bool Left { get; }
+
+        bool Right { get; }
+
+        bool Up { get; }
+
+        bool Down { get; }
     }
 }
