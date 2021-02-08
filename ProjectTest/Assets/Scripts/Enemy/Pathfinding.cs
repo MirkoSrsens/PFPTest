@@ -25,7 +25,7 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-    public static void GetPath(this Transform current, Transform target)
+    public static void GetPath(Transform current, Transform target)
     {
 
     }
