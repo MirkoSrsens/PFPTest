@@ -2,7 +2,7 @@
 
 public class Node
 {
-    public Vector2Int position { get; set; }
+    public Vector2 position { get; set; }
 
     public Vector2Int index { get; set; }
 
@@ -14,8 +14,11 @@ public class Node
 
     public float GCost { get { return FCost + HCost; } }
 
-    public Node(Vector2Int position, Vector2Int index)
+    public bool IsWalkable { get; set; }
+
+    public Node(Vector2 position, Vector2Int index)
     {
+        this.IsWalkable = true;
         this.position = position;
         this.index = index;
     }

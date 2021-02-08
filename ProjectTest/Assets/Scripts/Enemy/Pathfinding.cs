@@ -27,7 +27,16 @@ public class Pathfinding : MonoBehaviour
         {
             for (int j = 0; j < cells.GetLength(1); j++)
             {
-                cells[i,j] = new Node(new Vector2Int(tileMap.cellBounds.min.x + i, tileMap.cellBounds.min.y + j), new Vector2Int(i,j));
+                var node = new Node(new Vector2(tileMap.cellBounds.min.x + i - tileMap.tileAnchor.x, tileMap.cellBounds.min.y + j - tileMap.tileAnchor.y), new Vector2Int(i, j));
+
+                var hit = Physics2D.OverlapCircleAll(node.position, 0.1f);
+
+                if(hit.Length > 0)
+                {
+                    node.IsWalkable = false;
+                }
+
+                cells[i,j] = node;
             }
         }
 
@@ -46,7 +55,7 @@ public class Pathfinding : MonoBehaviour
         openHash.Enqueue(startPoint);
 
         var count = 0;
-        while (openHash.Count > 0 && count < 10000)
+        while (openHash.Count > 0 && count < cells.Length)
         {
             var nextNode = openHash.Dequeue();
 
@@ -64,6 +73,13 @@ public class Pathfinding : MonoBehaviour
                 break;
             }
         }
+
+        count = 0;
+        while (count < 1000 && (selectedNode != startPoint && selectedNode != null))
+        {
+            Instantiate(end, new Vector3(selectedNode.position.x, selectedNode.position.y, 0), Quaternion.identity, null);
+            selectedNode = selectedNode.parent;
+        }
     }
 
     private void CalculateNeighbours(Queue<Node> openHash, HashSet<Node> closedHash, Node nextNode)
@@ -78,7 +94,7 @@ public class Pathfinding : MonoBehaviour
         {
             var node = cells[nextNode.index.x - 1, nextNode.index.y];
 
-            if (!closedHash.Contains(node) && !openHash.Contains(node))
+            if (!closedHash.Contains(node) && !openHash.Contains(node) && node.IsWalkable)
             {
                 openHash.Enqueue(cells[nextNode.index.x - 1, nextNode.index.y]);
 
@@ -92,7 +108,7 @@ public class Pathfinding : MonoBehaviour
         {
             var node = cells[nextNode.index.x + 1, nextNode.index.y];
 
-            if (!closedHash.Contains(node) && !openHash.Contains(node))
+            if (!closedHash.Contains(node) && !openHash.Contains(node) && node.IsWalkable)
             {
                 openHash.Enqueue(node);
 
@@ -106,7 +122,7 @@ public class Pathfinding : MonoBehaviour
         {
             var node = cells[nextNode.index.x, nextNode.index.y + 1];
 
-            if (!closedHash.Contains(node) && !openHash.Contains(node))
+            if (!closedHash.Contains(node) && !openHash.Contains(node) && node.IsWalkable)
             {
                 openHash.Enqueue(node);
 
@@ -120,7 +136,7 @@ public class Pathfinding : MonoBehaviour
         {
             var node = cells[nextNode.index.x, nextNode.index.y - 1];
 
-            if (!closedHash.Contains(node) && !openHash.Contains(node))
+            if (!closedHash.Contains(node) && !openHash.Contains(node) && node.IsWalkable)
             {
                 openHash.Enqueue(node);
 
