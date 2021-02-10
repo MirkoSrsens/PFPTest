@@ -7,6 +7,8 @@ namespace Assets.Scripts.Data.InjectionData
     /// </summary>
     public class PCInputController : IInputController
     {
+        public bool HideButton { get { return Input.GetKeyDown(KeyCode.E); } }
+
         public bool Left { get { return Input.GetKey(KeyCode.A); } }
 
         public bool Right { get { return Input.GetKey(KeyCode.D); } }

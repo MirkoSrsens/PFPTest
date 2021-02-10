@@ -2,6 +2,8 @@
 {
     public interface IInputController
     {
+        bool HideButton { get; }
+
         bool MovementInputDetected { get; }
 
         bool Left { get; }

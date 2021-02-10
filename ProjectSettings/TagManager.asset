@@ -8,6 +8,7 @@ TagManager:
   - Killer
   - Point
   - Coin
+  - Hide
   layers:
   - Default
   - TransparentFX
